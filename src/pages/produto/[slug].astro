@@ -75,6 +75,7 @@ const filled = p.edition ? Math.max(1, Math.round((p.edition.made / p.edition.to
             <strong>{brl(p.price)}</strong>
             <span>ou {installment(p.price)} sem juros</span>
             <span class="price__pix">{brl(pix)} no Pix</span>
+            {p.soon && <span class="price__soon">Preço previsto</span>}
           </div>
 
           {p.edition && (
@@ -91,6 +92,24 @@ const filled = p.edition ? Math.max(1, Math.round((p.edition.made / p.edition.to
           <p class="desc" data-reveal style="--d:3">{p.description}</p>
           {p.note && <p class="note label">{p.note}</p>}
 
+          {p.soon ? (
+          <form class="notify" id="notify" novalidate data-slug={p.slug} data-reveal style="--d:4">
+            {p.finishes && (
+              <fieldset class="finish">
+                <legend class="label">{optionLabel} (prévia)</legend>
+                <div class="finish__opts">
+                  {p.finishes.map((f) => <span class="opt opt--static"><span>{f}</span></span>)}
+                </div>
+              </fieldset>
+            )}
+            <p class="soon">Em formulação. Deixe seu e-mail e avisamos quando a {p.name.replace('Resina ', 'resina ')} chegar.</p>
+            <div class="notify__row">
+              <input id="notify-email" name="email" type="email" required autocomplete="email" placeholder="seu@email.com" aria-label="Seu e-mail" />
+              <button type="submit" class="btn">Avise-me</button>
+            </div>
+            <p class="buy__ok" id="notify-msg" role="status" aria-live="polite"></p>
+          </form>
+          ) : (
           <form class="buy" id="buy" onsubmit="return false" data-slug={p.slug} data-reveal style="--d:4">
             {p.finishes && (
               <fieldset class="finish">
@@ -116,6 +135,7 @@ const filled = p.edition ? Math.max(1, Math.round((p.edition.made / p.edition.to
             </div>
             <p class="buy__ok" id="added" role="status" hidden>Adicionado à sacola. <a href={url('/carrinho')}>Ver sacola →</a></p>
           </form>
+          )}
 
           <ul class="trust" data-reveal style="--d:5">
             <li><i aria-hidden="true"></i>{leadLabel}: {p.leadTime}</li>
@@ -223,6 +243,23 @@ const filled = p.edition ? Math.max(1, Math.round((p.edition.made / p.edition.to
     add.textContent = 'Adicionado ✓';
     clearTimeout(timer);
     timer = window.setTimeout(() => { add.textContent = 'Adicionar à sacola'; if (ok) ok.hidden = true; }, 5000);
+  });
+
+  // Lista de espera (mockup): guarda só no navegador
+  const notify = document.querySelector<HTMLFormElement>('#notify');
+  notify?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = notify.querySelector<HTMLInputElement>('#notify-email')!;
+    const msg = notify.querySelector<HTMLElement>('#notify-msg')!;
+    const email = input.value.trim();
+    if (!/^\S+@\S+\.\S+$/.test(email)) { msg.textContent = 'Digite um e-mail válido.'; return; }
+    try {
+      const list = JSON.parse(localStorage.getItem('az-notify') || '[]');
+      list.push({ slug: notify.dataset.slug, email });
+      localStorage.setItem('az-notify', JSON.stringify(list));
+    } catch {}
+    msg.textContent = 'Anotado! Avisamos quando chegar. (Mockup: o e-mail fica só neste navegador.)';
+    input.value = '';
   });
 </script>
 
@@ -350,6 +387,14 @@ const filled = p.edition ? Math.max(1, Math.round((p.edition.made / p.edition.to
   .qty button:hover { color: var(--orange); }
   .qty output { min-width: 32px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
   .buy__add { flex: 1; }
+  .notify { display: grid; gap: 18px; }
+  .notify__row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .notify__row input { flex: 1 1 220px; min-width: 0; height: 48px; padding: 0 14px; background: var(--ink); border: 1px solid var(--line-strong); color: var(--ivory); font: inherit; font-size: 15px; }
+  .notify__row input:focus-visible { outline-offset: 0; border-color: var(--orange); }
+  .soon { color: #cfc8ba; font-size: 14.5px; max-width: 52ch; }
+  .opt--static span { cursor: default; }
+  .opt--static:hover span { border-color: var(--line-strong); }
+  .price__soon { padding: 3px 8px; border: 1px solid var(--orange); color: var(--orange) !important; font-size: 11px !important; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; }
   .buy__ok { font-size: 13px; color: var(--orange); font-weight: 600; letter-spacing: .04em; }
   .buy__ok a { text-decoration: underline; text-underline-offset: 3px; margin-left: 6px; }
 
