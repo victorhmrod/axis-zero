@@ -6,8 +6,8 @@ const nav = [
   { label: 'Gadgets', href: '/colecao?categoria=gadgets' },
   { label: 'Cosplay', href: '/colecao?categoria=cosplay' },
   { label: 'Edições limitadas', href: '/colecao?filtro=limitadas' },
+  { label: 'Sob medida', href: '/#sobmedida' },
 ];
-const path = Astro.url.pathname;
 ---
 <div class="announce">
   <div class="container announce__in">
@@ -34,13 +34,14 @@ const path = Astro.url.pathname;
       <button class="icon-btn" aria-label="Buscar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5 21 21" /></svg>
       </button>
-      <button class="icon-btn icon-btn--hide" aria-label="Minha conta">
+      <a class="icon-btn icon-btn--hide account" href={url('/conta')} aria-label="Minha conta" data-account>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><circle cx="12" cy="8" r="4" /><path d="M4 21v-2a5 5 0 0 1 5-5h6a5 5 0 0 1 5 5v2" /></svg>
-      </button>
-      <button class="icon-btn cart" aria-label="Sacola, 0 itens" data-cart>
+        <span class="account__dot" aria-hidden="true"></span>
+      </a>
+      <a class="icon-btn cart" href={url('/carrinho')} aria-label="Sacola, 0 itens" data-cart>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M5 8h14l-1 12H6L5 8Z" /><path d="M9 8V6a3 3 0 0 1 6 0v2" /></svg>
         <span class="cart__n" data-cart-n>0</span>
-      </button>
+      </a>
 
       <details class="menu">
         <summary class="icon-btn" aria-label="Abrir menu">
@@ -49,6 +50,7 @@ const path = Astro.url.pathname;
         <nav class="menu__panel" aria-label="Menu móvel">
           <ul>
             {nav.map((n) => <li><a href={url(n.href)}>{n.label}</a></li>)}
+            <li><a href={url('/conta')}>Minha conta</a></li>
             <li><a href={url('/#encomendas')} class="menu__cta">Encomendas</a></li>
           </ul>
         </nav>
@@ -58,21 +60,26 @@ const path = Astro.url.pathname;
 </header>
 
 <script>
-  // Sacola de mentira: guarda só a quantidade no navegador e atualiza o selo.
-  const KEY = 'az-cart';
-  const read = () => {
-    try { return Math.max(0, Number(localStorage.getItem(KEY)) || 0); } catch { return 0; }
-  };
+  import { count } from '../scripts/cart';
+
+  // Selo da sacola + ponto de "logado" no ícone da conta.
   const render = () => {
-    const n = read();
-    document.querySelectorAll<HTMLElement>('[data-cart-n]').forEach((el) => { el.textContent = String(n); });
-    document.querySelectorAll<HTMLElement>('[data-cart]').forEach((el) => el.setAttribute('aria-label', `Sacola, ${n} ${n === 1 ? 'item' : 'itens'}`));
+    const n = count();
+    document.querySelectorAll<HTMLElement>('[data-cart-n]').forEach((el) => {
+      const changed = el.textContent !== String(n);
+      el.textContent = String(n);
+      if (changed) { el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
+    });
+    document.querySelectorAll<HTMLElement>('[data-cart]').forEach((el) =>
+      el.setAttribute('aria-label', `Sacola, ${n} ${n === 1 ? 'item' : 'itens'}`));
+
+    let logged = false;
+    try { logged = !!localStorage.getItem('az-user'); } catch {}
+    document.querySelectorAll<HTMLElement>('[data-account]').forEach((el) => el.classList.toggle('is-logged', logged));
   };
-  window.addEventListener('az:cart-add', (e) => {
-    const qty = (e as CustomEvent<number>).detail || 1;
-    try { localStorage.setItem(KEY, String(read() + qty)); } catch {}
-    render();
-  });
+  window.addEventListener('az:cart-change', render);
+  window.addEventListener('az:user-change', render);
+  window.addEventListener('storage', render);
   render();
 </script>
 
@@ -163,6 +170,18 @@ const path = Astro.url.pathname;
   .icon-btn:hover { color: var(--orange); }
   .icon-btn svg { width: 22px; height: 22px; }
 
+  .account__dot {
+    display: none;
+    position: absolute;
+    top: 9px; right: 9px;
+    width: 9px; height: 9px;
+    background: var(--orange);
+    border: 2px solid var(--ink);
+  }
+  .account.is-logged .account__dot { display: block; }
+  .bump { animation: bump .45s cubic-bezier(.2, .8, .2, 1); }
+  @keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.6); } 100% { transform: scale(1); } }
+
   .cart__n {
     position: absolute;
     top: 4px; right: 2px;
@@ -195,7 +214,7 @@ const path = Astro.url.pathname;
   }
   .menu__panel .menu__cta { color: var(--orange); border-bottom: 0; }
 
-  @media (max-width: 960px) {
+  @media (max-width: 1100px) {
     .header__nav { display: none; }
     .menu { display: block; }
     .icon-btn--hide { display: none; }

@@ -1,0 +1,83 @@
+---
+import { url } from '../utils/url';
+
+const team = [
+  {
+    name: 'Victor Henrique',
+    photo: '/team/victor-henrique.webp',
+    role: 'Produção e acabamento',
+    bio: 'Cuida de toda a parte física: impressão, lixa, pintura e acabamento. É a mão que fecha cada peça.',
+  },
+  {
+    name: 'Wendell Freire',
+    photo: '/team/wendell-freire.webp',
+    role: 'Modelagem 3D',
+    bio: 'Faz os modelos: da escultura digital ao arquivo pronto para imprimir. Tudo começa no desenho dele.',
+  },
+];
+---
+<section class="section section--ivory team" id="equipe" aria-labelledby="team-title">
+  <div class="container">
+    <p class="eyebrow" data-reveal><span class="num">06</span> Equipe</p>
+
+    <div class="team__head">
+      <h2 id="team-title" class="display" data-reveal="clip">Quem põe a <em>mão</em> na peça</h2>
+      <p data-reveal style="--d:2">
+        A Axis Zero é um estúdio de dois: um desenha o modelo, o outro imprime, lixa e pinta.
+        Cada peça passa por nós, da modelagem ao último pincel.
+      </p>
+    </div>
+
+    <ul class="team__grid">
+      {team.map((m, i) => (
+        <li class="member" data-reveal style={`--d:${i}`}>
+          <div class="member__photo chamfer" style="--c: 26px; --bg: var(--ink); --bc: var(--ink);" data-tilt="4">
+            <img src={url(m.photo)} alt={`Foto de ${m.name}`} width="720" height="720" loading="lazy" decoding="async" />
+            <span class="member__layers" aria-hidden="true"><i></i><i></i><i class="o"></i></span>
+          </div>
+          <div class="member__info">
+            <h3 class="display">{m.name}</h3>
+            <p class="label role">{m.role}</p>
+            <p class="bio">{m.bio}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .team__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
+    gap: 24px 64px;
+    align-items: end;
+    margin: 28px 0 clamp(32px, 5vw, 56px);
+  }
+  .team__head h2 { font-size: clamp(44px, 7vw, 96px); }
+  .team__head p { color: var(--ivory-muted); max-width: 44ch; }
+
+  .team__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 40px); max-width: 960px; }
+  .member { display: grid; gap: 20px; }
+  .member__photo { position: relative; aspect-ratio: 1 / 1; overflow: hidden; }
+  .member__photo img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: grayscale(1) contrast(1.08) brightness(.95);
+    transform: scale(1.02);
+    transition: filter .5s ease, transform .6s cubic-bezier(.2, .8, .2, 1);
+  }
+  .member:hover .member__photo img, .member:focus-within .member__photo img { filter: none; transform: scale(1.06); }
+  /* faixas do "padrão camadas" na base da foto */
+  .member__layers { position: absolute; left: 0; right: 0; bottom: 0; display: grid; gap: 4px; padding-bottom: 0; }
+  .member__layers i { display: block; height: 5px; background: var(--ink); }
+  .member__layers i.o { background: var(--orange); }
+  .member__info { display: grid; gap: 6px; }
+  .role { color: var(--orange); font-weight: 700; }
+  .bio { color: var(--ivory-muted); font-size: 15px; max-width: 38ch; }
+  .member__info h3 { font-size: clamp(32px, 4vw, 48px); line-height: 1; }
+
+  @media (max-width: 760px) {
+    .team__head { grid-template-columns: 1fr; }
+    .team__grid { grid-template-columns: 1fr; max-width: 420px; }
+  }
+</style>

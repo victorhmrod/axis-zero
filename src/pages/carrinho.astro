@@ -1,0 +1,310 @@
+---
+import Shell from '../layouts/Shell.astro';
+import ProductImage from '../components/ProductImage.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { products, categoryLabel, photoOf } from '../data/products';
+import { url } from '../utils/url';
+
+// Catálogo enxuto para o JavaScript montar a sacola no navegador.
+const catalog = products.map((p) => ({
+  slug: p.slug,
+  name: p.name,
+  category: categoryLabel(p.category),
+  summary: p.summary,
+  price: p.price,
+  href: url(`/produto/${p.slug}`),
+  photo: !!photoOf(p),
+}));
+const suggestions = products.slice(0, 3);
+---
+<Shell title="Sacola · Axis Zero" description="Revise as peças da sua sacola na Axis Zero.">
+  <section class="cart-page">
+    <div class="container">
+      <nav class="crumbs" aria-label="Você está em">
+        <a href={url('/')}>Início</a><span aria-hidden="true">/</span><span aria-current="page">Sacola</span>
+      </nav>
+
+      <p class="eyebrow" data-reveal><span class="num">01</span> Sacola</p>
+      <h1 class="display page-title" data-reveal="clip">Sua <em>sacola</em></h1>
+
+      <div class="cart-grid" id="cart-grid" hidden>
+        <div>
+          <ul class="items" id="items" aria-live="polite"></ul>
+          <div class="items__foot">
+            <a class="back" href={url('/colecao')}>← Continuar olhando</a>
+            <button type="button" class="link" id="clear">Esvaziar sacola</button>
+          </div>
+        </div>
+
+        <aside class="summary chamfer" style="--c: 22px;" aria-label="Resumo do pedido">
+          <h2 class="display">Resumo</h2>
+
+          <form class="fld" id="cep-form" novalidate>
+            <label for="cep" class="label">Calcular frete</label>
+            <div class="fld__row">
+              <input id="cep" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" maxlength="9" />
+              <button type="submit" class="btn btn--sm btn--ghost">Calcular</button>
+            </div>
+            <p class="hint" id="cep-msg" role="status"></p>
+          </form>
+
+          <form class="fld" id="coupon-form" novalidate>
+            <label for="coupon" class="label">Cupom</label>
+            <div class="fld__row">
+              <input id="coupon" placeholder="Tem um cupom?" autocomplete="off" />
+              <button type="submit" class="btn btn--sm btn--ghost">Aplicar</button>
+            </div>
+            <p class="hint" id="coupon-msg" role="status"></p>
+          </form>
+
+          <dl class="totals">
+            <div><dt>Subtotal</dt><dd id="t-sub">—</dd></div>
+            <div id="row-discount" hidden><dt>Desconto</dt><dd id="t-disc" class="ok">—</dd></div>
+            <div><dt>Frete</dt><dd id="t-ship">Calcule acima</dd></div>
+            <div class="totals__total"><dt>Total</dt><dd id="t-total">—</dd></div>
+          </dl>
+          <p class="pix" id="t-pix"></p>
+
+          <button type="button" class="btn buy" id="checkout">Finalizar compra</button>
+          <p class="demo" id="checkout-msg" role="status" hidden>
+            Este é um mockup: o checkout ainda não está conectado a pagamento.
+          </p>
+          <p class="secure label">Envio segurado · embalagem reforçada</p>
+        </aside>
+      </div>
+
+      <div class="empty chamfer" id="empty" style="--c: 22px;" hidden>
+        <p class="display">Sacola vazia</p>
+        <p>Nenhuma peça por aqui ainda. Tudo começa na primeira camada: escolha a sua.</p>
+        <a class="btn" href={url('/colecao')}>Ver coleção</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section sug" aria-labelledby="sug-title">
+    <div class="container">
+      <p class="eyebrow" data-reveal><span class="num">02</span> Sugestões</p>
+      <div class="section-head" style="margin-top: 28px;">
+        <h2 id="sug-title" class="display" data-reveal="clip">Que tal <em>levar junto</em></h2>
+      </div>
+      <ul class="sug__grid">
+        {suggestions.map((p, i) => <li data-reveal style={`--d:${i}`}><ProductCard product={p} /></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Miniaturas renderizadas no servidor; o script clona a do produto. -->
+  {products.map((p) => (
+    <template data-thumb={p.slug}><ProductImage product={p} uid={`cart-${p.slug}`} sizes="96px" /></template>
+  ))}
+  <script is:inline type="application/json" id="catalog" set:html={JSON.stringify(catalog)} />
+</Shell>
+
+<script>
+  import { read, setQty, remove, clear } from '../scripts/cart';
+
+  type Product = { slug: string; name: string; category: string; summary: string; price: number; href: string; photo: boolean };
+  const catalog: Product[] = JSON.parse(document.getElementById('catalog')?.textContent ?? '[]');
+  const bySlug = new Map(catalog.map((p) => [p.slug, p]));
+
+  const $ = <T extends HTMLElement>(sel: string) => document.querySelector<T>(sel)!;
+  const money = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+  const SHIPPING = 24.9;           // valor de demonstração
+  const COUPONS: Record<string, number> = { AXIS10: 0.1 }; // cupom de demonstração
+  let shipping: number | null = null;
+  let coupon: string | null = null;
+  try { coupon = localStorage.getItem('az-coupon'); shipping = Number(localStorage.getItem('az-ship')) || null; } catch {}
+
+  const list = $('#items');
+
+  const render = () => {
+    const items = read().filter((i) => bySlug.has(i.slug));
+    $('#cart-grid').hidden = items.length === 0;
+    $('#empty').hidden = items.length !== 0;
+
+    list.replaceChildren();
+    items.forEach((it) => {
+      const p = bySlug.get(it.slug)!;
+      const li = document.createElement('li');
+      li.className = 'item chamfer';
+      li.style.setProperty('--c', '16px');
+
+      const thumb = document.createElement('a');
+      thumb.className = 'item__thumb' + (p.photo ? ' is-photo' : '');
+      thumb.href = p.href;
+      thumb.setAttribute('aria-label', `Ver ${p.name}`);
+      const tpl = document.querySelector<HTMLTemplateElement>(`template[data-thumb="${p.slug}"]`);
+      if (tpl) thumb.append(tpl.content.cloneNode(true));
+
+      const info = document.createElement('div');
+      info.className = 'item__info';
+      const cat = document.createElement('p'); cat.className = 'label'; cat.textContent = p.category;
+      const name = document.createElement('a'); name.className = 'item__name display'; name.href = p.href; name.textContent = p.name;
+      const fin = document.createElement('p'); fin.className = 'item__finish'; fin.textContent = `Acabamento: ${it.finish}`;
+      const unit = document.createElement('p'); unit.className = 'item__unit'; unit.textContent = `${money(p.price)} cada`;
+      info.append(cat, name, fin, unit);
+
+      const qty = document.createElement('div');
+      qty.className = 'qty';
+      qty.setAttribute('role', 'group');
+      qty.setAttribute('aria-label', `Quantidade de ${p.name}`);
+      const minus = document.createElement('button'); minus.type = 'button'; minus.textContent = '−'; minus.setAttribute('aria-label', 'Diminuir');
+      const out = document.createElement('output'); out.textContent = String(it.qty);
+      const plus = document.createElement('button'); plus.type = 'button'; plus.textContent = '+'; plus.setAttribute('aria-label', 'Aumentar');
+      minus.addEventListener('click', () => setQty(it.slug, it.finish, it.qty - 1));
+      plus.addEventListener('click', () => setQty(it.slug, it.finish, it.qty + 1));
+      qty.append(minus, out, plus);
+
+      const price = document.createElement('p'); price.className = 'item__price'; price.textContent = money(p.price * it.qty);
+
+      const del = document.createElement('button');
+      del.type = 'button'; del.className = 'item__del'; del.setAttribute('aria-label', `Remover ${p.name}`);
+      del.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M5 5l14 14M19 5L5 19"/></svg>';
+      del.addEventListener('click', () => remove(it.slug, it.finish));
+
+      li.append(thumb, info, qty, price, del);
+      list.append(li);
+    });
+
+    const sub = items.reduce((n, i) => n + bySlug.get(i.slug)!.price * i.qty, 0);
+    const rate = coupon ? COUPONS[coupon] ?? 0 : 0;
+    const disc = Math.round(sub * rate * 100) / 100;
+    const total = sub - disc + (shipping ?? 0);
+
+    $('#t-sub').textContent = money(sub);
+    $('#row-discount').hidden = disc === 0;
+    $('#t-disc').textContent = `− ${money(disc)}`;
+    $('#t-ship').textContent = shipping === null ? 'Calcule acima' : money(shipping);
+    $('#t-total').textContent = money(total);
+    $('#t-pix').textContent = `ou ${money(total * 0.95)} no Pix (5% off)`;
+  };
+
+  // CEP (demonstração: qualquer CEP válido tem o mesmo frete)
+  const cep = $<HTMLInputElement>('#cep');
+  cep.addEventListener('input', () => {
+    const d = cep.value.replace(/\D/g, '').slice(0, 8);
+    cep.value = d.length > 5 ? `${d.slice(0, 5)}-${d.slice(5)}` : d;
+  });
+  $('#cep-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const ok = cep.value.replace(/\D/g, '').length === 8;
+    const msg = $('#cep-msg');
+    if (!ok) { msg.textContent = 'Digite um CEP com 8 números.'; msg.className = 'hint err'; return; }
+    shipping = SHIPPING;
+    try { localStorage.setItem('az-ship', String(SHIPPING)); } catch {}
+    msg.textContent = 'Envio segurado · 5 a 8 dias úteis (valor de demonstração).';
+    msg.className = 'hint ok';
+    render();
+  });
+
+  // Cupom (demonstração: AXIS10)
+  const couponInput = $<HTMLInputElement>('#coupon');
+  if (coupon) { couponInput.value = coupon; $('#coupon-msg').textContent = `Cupom ${coupon} aplicado.`; $('#coupon-msg').className = 'hint ok'; }
+  $('#coupon-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const code = couponInput.value.trim().toUpperCase();
+    const msg = $('#coupon-msg');
+    if (code in COUPONS) {
+      coupon = code;
+      try { localStorage.setItem('az-coupon', code); } catch {}
+      msg.textContent = `Cupom ${code} aplicado: ${COUPONS[code] * 100}% de desconto.`; msg.className = 'hint ok';
+    } else {
+      coupon = null;
+      try { localStorage.removeItem('az-coupon'); } catch {}
+      msg.textContent = 'Cupom inválido. Dica de demonstração: AXIS10.'; msg.className = 'hint err';
+    }
+    render();
+  });
+
+  $('#clear').addEventListener('click', () => clear());
+  $('#checkout').addEventListener('click', () => { $('#checkout-msg').hidden = false; });
+
+  window.addEventListener('az:cart-change', render);
+  window.addEventListener('storage', render);
+  render();
+</script>
+
+<style is:global>
+  .cart-page { padding-block: clamp(28px, 4vw, 56px) clamp(32px, 5vw, 64px); }
+  .crumbs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .16em; color: var(--steel); }
+  .crumbs a:hover { color: var(--orange); }
+  .crumbs [aria-current] { color: var(--ivory); }
+  .cart-page .page-title { font-size: clamp(48px, 8vw, 112px); margin: 24px 0 clamp(28px, 4vw, 48px); }
+  .cart-page .cart-grid { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: clamp(24px, 4vw, 56px); align-items: start; }
+  .cart-page [hidden] { display: none !important; }
+  .cart-page .cart-grid[hidden], .cart-page .empty[hidden] { display: none; }
+  .cart-page .items { display: grid; gap: 14px; }
+  .cart-page .item {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr) auto auto 36px;
+    align-items: center;
+    gap: 20px;
+    padding: 18px 20px;
+  }
+  .cart-page .item__thumb { position: relative; display: block; width: 96px; height: 96px; background: var(--surface-2); padding: 8px; }
+  .cart-page .item__thumb.is-photo { padding: 0; background: #101011; }
+  .cart-page .item__info { display: grid; gap: 4px; min-width: 0; }
+  .cart-page .item__name { font-size: 26px; line-height: 1; }
+  .cart-page .item__name:hover { color: var(--orange); }
+  .cart-page .item__finish { font-size: 13px; color: var(--ivory); }
+  .cart-page .item__unit { font-size: 12.5px; color: var(--steel); }
+  .cart-page .item__price { font-weight: 700; font-size: 18px; letter-spacing: -.01em; min-width: 110px; text-align: right; }
+  .cart-page .item__del { width: 36px; height: 36px; display: grid; place-items: center; background: none; border: 0; color: var(--steel); }
+  .cart-page .item__del:hover { color: var(--orange); }
+  .cart-page .qty { display: inline-flex; align-items: center; border: 1px solid var(--line-strong); height: 40px; }
+  .cart-page .qty button { width: 36px; height: 100%; background: none; border: 0; font-size: 18px; line-height: 1; }
+  .cart-page .qty button:hover { color: var(--orange); }
+  .cart-page .qty output { min-width: 28px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .cart-page .items__foot { display: flex; justify-content: space-between; gap: 16px; margin-top: 20px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .14em; }
+  .cart-page .back:hover, .cart-page .link:hover { color: var(--orange); }
+  .cart-page .link { background: none; border: 0; padding: 0; color: var(--steel); text-transform: inherit; letter-spacing: inherit; font-weight: inherit; font-size: inherit; text-decoration: underline; text-underline-offset: 4px; }
+  .cart-page .summary { position: sticky; top: 100px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; padding: 28px; --bg: var(--surface); }
+  .cart-page .summary h2 { font-size: 32px; }
+  .cart-page .fld { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .cart-page .fld__row { display: flex; gap: 8px; }
+  .cart-page .fld input {
+    flex: 1; min-width: 0; height: 40px; padding: 0 14px;
+    background: var(--ink); border: 1px solid var(--line-strong); color: var(--ivory); font: inherit; font-size: 14px;
+  }
+  .cart-page .fld input::placeholder { color: var(--steel); }
+  .cart-page .fld input:focus-visible { outline-offset: 0; border-color: var(--orange); }
+  .cart-page .hint { font-size: 12.5px; color: var(--steel); min-height: 1.2em; }
+  .cart-page .hint.ok { color: var(--ivory); }
+  .cart-page .hint.err { color: var(--orange); }
+  .cart-page .totals { display: grid; gap: 10px; margin: 0; padding-top: 18px; border-top: 1px solid var(--line); }
+  .cart-page .totals > div { display: flex; justify-content: space-between; gap: 16px; font-size: 14.5px; }
+  .cart-page .totals dt { color: var(--steel); }
+  .cart-page .totals dd { margin: 0; font-weight: 600; text-align: right; }
+  .cart-page .totals dd.ok { color: var(--orange); }
+  .cart-page .totals__total { padding-top: 14px; border-top: 1px solid var(--line); }
+  .cart-page .totals__total dt { color: var(--ivory); font-family: var(--font-display); font-size: 22px; text-transform: uppercase; letter-spacing: .02em; }
+  .cart-page .totals__total dd { font-size: 26px; letter-spacing: -.02em; }
+  .cart-page .pix { margin-top: -10px; font-size: 13px; color: var(--steel); text-align: right; }
+  .cart-page .buy { width: 100%; }
+  .cart-page .demo { font-size: 12.5px; color: var(--orange); font-weight: 600; }
+  .cart-page .secure { text-align: center; }
+  .cart-page .empty { --bg: var(--surface); display: grid; justify-items: start; gap: 18px; padding: clamp(28px, 5vw, 56px); max-width: 640px; }
+  .cart-page .empty .display { font-size: clamp(36px, 5vw, 56px); }
+  .cart-page .empty p:not(.display) { color: var(--steel); max-width: 44ch; }
+  .sug { padding-top: clamp(40px, 6vw, 72px); }
+  .sug__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+  @media (max-width: 1000px) {
+  .cart-page .cart-grid { grid-template-columns: minmax(0, 1fr); }
+  .cart-page .summary { position: static; }
+  .sug__grid { grid-template-columns: repeat(2, 1fr); }
+  .sug__grid li:nth-child(3) { display: none; }
+  }
+  @media (max-width: 640px) {
+  .cart-page .item { grid-template-columns: 80px minmax(0, 1fr) auto; grid-template-areas: 'thumb info del' 'thumb qty price'; gap: 12px 16px; padding: 16px; }
+  .cart-page .item__thumb { grid-area: thumb; width: 80px; height: 80px; align-self: start; }
+  .cart-page .item__info { grid-area: info; }
+  .cart-page .item__del { grid-area: del; align-self: start; justify-self: end; }
+  .cart-page .qty { grid-area: qty; justify-self: start; }
+  .cart-page .item__price { grid-area: price; min-width: 0; align-self: center; justify-self: end; }
+  .cart-page .item__name { font-size: 22px; }
+  .sug__grid { grid-template-columns: minmax(0, 1fr); }
+  .sug__grid li:nth-child(3) { display: block; }
+  }
+</style>

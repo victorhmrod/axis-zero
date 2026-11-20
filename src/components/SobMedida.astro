@@ -1,0 +1,155 @@
+---
+const steps = [
+  { n: '01', t: 'Conte a ideia', d: 'Envie o arquivo 3D (STL) ou uma referência. A gente ajuda a tirar do papel.' },
+  { n: '02', t: 'Receba o orçamento', d: 'Material, resolução, acabamento e prazo combinados antes de começar.' },
+  { n: '03', t: 'A gente produz', d: 'Fatia, imprime, lixa e, se quiser, pinta à mão. Sai com cara de ateliê.' },
+];
+const mail = 'mailto:contato@axiszero.studio?subject=' + encodeURIComponent('Peça sob medida');
+---
+<section class="section sob" id="sobmedida" aria-labelledby="sob-title">
+  <div class="container">
+    <p class="eyebrow" data-reveal><span class="num">04</span> Sob medida</p>
+
+    <div class="sob__head">
+      <h2 id="sob-title" class="display" data-reveal="clip">Peças <em>sob medida</em></h2>
+      <p data-reveal style="--d:2">
+        Além da coleção, produzimos a sua peça: em <strong>filamento</strong> ou em <strong>resina</strong>,
+        do protótipo ao acabamento final.
+      </p>
+    </div>
+
+    <div class="sob__grid">
+      <article class="tech chamfer" style="--c: 22px; --d:0;" data-reveal>
+        <header>
+          <span class="tag">FDM</span>
+          <h3 class="display">Filamento</h3>
+        </header>
+        <p>
+          Para peças grandes, funcionais e resistentes: protótipos, suportes, props e cosplay em escala real.
+          Trabalhamos com PLA+, PETG e outros materiais, em várias cores.
+        </p>
+        <ul class="tech__list">
+          <li><i aria-hidden="true"></i>Grandes formatos</li>
+          <li><i aria-hidden="true"></i>Peças funcionais e protótipos</li>
+          <li><i aria-hidden="true"></i>Lixado, primer e pintura sob pedido</li>
+        </ul>
+        <div class="viz viz--fdm" aria-hidden="true">
+          <div class="viz__box viz__box--fdm"><span class="label">Camadas visíveis · robusto</span></div>
+        </div>
+      </article>
+
+      <article class="tech chamfer chamfer--hover" style="--c: 22px; --d:1;" data-reveal>
+        <header>
+          <span class="tag tag--hot">8K · 16K</span>
+          <h3 class="display">Resina</h3>
+        </header>
+        <p>
+          Para detalhe fino: rostos, texturas, miniaturas e peças de exposição. Fazemos em <strong>8K</strong> e também em
+          <strong>16K</strong>, a resolução mais alta: pixels menores, mais fidelidade ao modelo e superfície mais lisa.
+        </p>
+        <ul class="tech__list">
+          <li><i aria-hidden="true"></i>Detalhe de rosto, tecido e textura</li>
+          <li><i aria-hidden="true"></i>16K: o máximo de qualidade</li>
+          <li><i aria-hidden="true"></i>Acabamento lixado e pintado à mão</li>
+        </ul>
+        <div class="viz" aria-hidden="true">
+          <div class="viz__box viz__box--8k"><b class="display">8K</b><span class="label">Muito detalhe</span></div>
+          <div class="viz__box viz__box--16k"><b class="display">16K</b><span class="label">Detalhe máximo</span></div>
+        </div>
+      </article>
+    </div>
+
+    <ol class="sob__steps">
+      {steps.map((s, i) => (
+        <li data-reveal style={`--d:${i}`}>
+          <span class="display">{s.n}</span>
+          <h3>{s.t}</h3>
+          <p>{s.d}</p>
+        </li>
+      ))}
+    </ol>
+
+    <div class="sob__cta" data-reveal>
+      <a class="btn" href={mail}>Pedir orçamento</a>
+      <p class="label">Resposta com prazo e valor · contato@axiszero.studio</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sob { padding-top: clamp(64px, 9vw, 120px); }
+  .sob__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
+    gap: 24px 64px;
+    align-items: end;
+    margin: 28px 0 clamp(32px, 5vw, 56px);
+  }
+  .sob__head h2 { font-size: clamp(44px, 7vw, 96px); }
+  .sob__head p { color: var(--steel); max-width: 44ch; }
+  .sob__head strong { color: var(--ivory); font-weight: 600; }
+
+  .sob__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .tech { display: grid; align-content: start; gap: 20px; padding: clamp(24px, 3vw, 40px); }
+  .tech header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .tech h3 { font-size: clamp(36px, 4vw, 52px); }
+  .tag {
+    padding: 5px 12px;
+    border: 1px solid var(--line-strong);
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .18em;
+    color: var(--ivory);
+    order: 2;
+  }
+  .tag--hot { background: var(--orange); border-color: var(--orange); color: var(--ink); }
+  .tech > p { color: #cfc8ba; }
+  .tech strong { color: var(--ivory); }
+  .tech__list { display: grid; gap: 10px; font-size: 14.5px; }
+  .tech__list li { display: flex; align-items: center; gap: 12px; }
+  .tech__list i { flex: none; width: 8px; height: 8px; background: var(--orange); }
+
+  /* comparação visual: quanto mais camadas, mais detalhe */
+  .viz { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 6px; }
+  .viz--fdm { grid-template-columns: 1fr; }
+  .viz__box {
+    position: relative;
+    display: flex; flex-direction: column; justify-content: flex-end; gap: 2px;
+    min-height: 120px;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .viz__box::before {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: repeating-linear-gradient(to bottom, var(--ivory) 0 var(--h), transparent var(--h) var(--p));
+    opacity: .22;
+    transition: opacity .4s;
+    mask-image: linear-gradient(to top, #000 10%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, #000 10%, transparent 100%);
+  }
+  .tech:hover .viz__box::before { opacity: .5; }
+  .viz__box--fdm  { --h: 9px; --p: 14px; }
+  .viz__box--8k   { --h: 5px; --p: 8px; }
+  .viz__box--16k  { --h: 2px; --p: 4px; border-color: var(--orange); }
+  .viz__box--16k::before { background: repeating-linear-gradient(to bottom, var(--orange) 0 var(--h), transparent var(--h) var(--p)); opacity: .55; }
+  .tech:hover .viz__box--16k::before { opacity: .9; }
+  .viz__box b { font-size: 34px; line-height: 1; }
+  .viz__box--16k b { color: var(--orange); }
+
+  .sob__steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: clamp(40px, 6vw, 72px); border-top: 1px solid var(--line); }
+  .sob__steps li { padding: 28px 28px 8px 0; margin-right: 28px; border-right: 1px solid var(--line); display: grid; gap: 8px; align-content: start; }
+  .sob__steps li:last-child { border-right: 0; margin-right: 0; }
+  .sob__steps .display { color: var(--orange); font-size: 20px; }
+  .sob__steps h3 { font-family: var(--font-display); font-size: 28px; text-transform: uppercase; letter-spacing: .02em; font-weight: 400; line-height: 1; }
+  .sob__steps p { color: var(--steel); font-size: 14.5px; max-width: 36ch; }
+
+  .sob__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; margin-top: 40px; }
+
+  @media (max-width: 900px) {
+    .sob__head { grid-template-columns: 1fr; }
+    .sob__grid { grid-template-columns: 1fr; }
+    .sob__steps { grid-template-columns: 1fr; }
+    .sob__steps li { border-right: 0; margin-right: 0; border-bottom: 1px solid var(--line); padding: 22px 0; }
+    .sob__steps li:last-child { border-bottom: 0; }
+  }
+</style>

@@ -86,7 +86,7 @@ const filled = p.edition ? Math.max(1, Math.round((p.edition.made / p.edition.to
           <p class="desc" data-reveal style="--d:3">{p.description}</p>
           {p.note && <p class="note label">{p.note}</p>}
 
-          <form class="buy" id="buy" onsubmit="return false" data-reveal style="--d:4">
+          <form class="buy" id="buy" onsubmit="return false" data-slug={p.slug} data-reveal style="--d:4">
             {p.finishes && (
               <fieldset class="finish">
                 <legend class="label">Acabamento</legend>
@@ -109,7 +109,7 @@ const filled = p.edition ? Math.max(1, Math.round((p.edition.made / p.edition.to
               </div>
               <button type="submit" class="btn buy__add" id="add">Adicionar à sacola</button>
             </div>
-            <p class="buy__ok" id="added" role="status" hidden>Adicionado à sacola.</p>
+            <p class="buy__ok" id="added" role="status" hidden>Adicionado à sacola. <a href={url('/carrinho')}>Ver sacola →</a></p>
           </form>
 
           <ul class="trust" data-reveal style="--d:5">
@@ -153,6 +153,8 @@ const filled = p.edition ? Math.max(1, Math.round((p.edition.made / p.edition.to
 </Shell>
 
 <script>
+  import { add as addToCart } from '../../scripts/cart';
+
   const stage = document.querySelector<HTMLElement>('.stage');
   const slicer = document.querySelector<HTMLInputElement>('#slicer');
   const now = document.querySelector<HTMLElement>('#layer-now');
@@ -200,11 +202,13 @@ const filled = p.edition ? Math.max(1, Math.round((p.edition.made / p.edition.to
   const ok = document.querySelector<HTMLElement>('#added');
   let timer = 0;
   add?.addEventListener('click', () => {
-    window.dispatchEvent(new CustomEvent('az:cart-add', { detail: qty }));
+    const form = document.querySelector<HTMLFormElement>('#buy');
+    const finish = form?.querySelector<HTMLInputElement>('input[name="acabamento"]:checked')?.value ?? 'Padrão';
+    addToCart(form?.dataset.slug ?? '', finish, qty);
     if (ok) ok.hidden = false;
     add.textContent = 'Adicionado ✓';
     clearTimeout(timer);
-    timer = window.setTimeout(() => { add.textContent = 'Adicionar à sacola'; if (ok) ok.hidden = true; }, 2200);
+    timer = window.setTimeout(() => { add.textContent = 'Adicionar à sacola'; if (ok) ok.hidden = true; }, 5000);
   });
 </script>
 
@@ -333,6 +337,7 @@ const filled = p.edition ? Math.max(1, Math.round((p.edition.made / p.edition.to
   .qty output { min-width: 32px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
   .buy__add { flex: 1; }
   .buy__ok { font-size: 13px; color: var(--orange); font-weight: 600; letter-spacing: .04em; }
+  .buy__ok a { text-decoration: underline; text-underline-offset: 3px; margin-left: 6px; }
 
   .trust { display: grid; gap: 10px; font-size: 14px; color: #cfc8ba; }
   .trust li { display: flex; align-items: center; gap: 12px; }

@@ -1,0 +1,297 @@
+---
+import Shell from '../layouts/Shell.astro';
+import { products, brl } from '../data/products';
+import { url } from '../utils/url';
+
+const find = (slug: string) => products.find((p) => p.slug === slug)!;
+// Pedidos de exemplo (mockup)
+const orders = [
+  { id: 'AZ-1042', date: '12 nov 2026', product: find('sentinela-01'), status: 'Em pintura', layers: 9 },
+  { id: 'AZ-1031', date: '28 out 2026', product: find('icone-cubico'), status: 'Entregue', layers: 12 },
+];
+---
+<Shell title="Minha conta · Axis Zero" description="Entre ou crie sua conta na Axis Zero para acompanhar pedidos e peças sob encomenda.">
+  <section class="account">
+    <div class="container">
+      <nav class="crumbs" aria-label="Você está em">
+        <a href={url('/')}>Início</a><span aria-hidden="true">/</span><span aria-current="page">Minha conta</span>
+      </nav>
+
+      <p class="eyebrow" data-reveal><span class="num">01</span> Conta</p>
+      <h1 class="display page-title" data-reveal="clip" id="title">Minha <em>conta</em></h1>
+
+      <!-- ===== Visitante ===== -->
+      <div class="auth chamfer" style="--c: 24px;" id="view-guest" data-reveal>
+        <div class="auth__side">
+          <p class="display">Acompanhe cada <em>camada</em></p>
+          <p>Com uma conta você vê o andamento dos pedidos, salva peças favoritas e pede orçamentos de peças sob medida.</p>
+          <ul class="auth__perks">
+            <li><i aria-hidden="true"></i>Andamento da produção, etapa por etapa</li>
+            <li><i aria-hidden="true"></i>Endereços salvos para o frete</li>
+            <li><i aria-hidden="true"></i>Avisos de novos drops</li>
+          </ul>
+        </div>
+
+        <div class="auth__main">
+          <div class="tabs" role="tablist" aria-label="Acesso">
+            <button type="button" role="tab" id="tab-login" aria-selected="true" aria-controls="login">Entrar</button>
+            <button type="button" role="tab" id="tab-signup" aria-selected="false" aria-controls="signup" tabindex="-1">Criar conta</button>
+          </div>
+
+          <form id="login" class="form" role="tabpanel" aria-labelledby="tab-login" novalidate>
+            <label class="f"><span class="label">E-mail</span><input name="email" type="email" required autocomplete="email" placeholder="seu@email.com" /></label>
+            <label class="f"><span class="label">Senha</span><input name="senha" type="password" required minlength="4" autocomplete="current-password" placeholder="••••••••" /></label>
+            <p class="msg" role="alert" data-msg></p>
+            <button type="submit" class="btn">Entrar</button>
+          </form>
+
+          <form id="signup" class="form" role="tabpanel" aria-labelledby="tab-signup" hidden novalidate>
+            <label class="f"><span class="label">Nome</span><input name="nome" type="text" required autocomplete="name" placeholder="Como devemos te chamar" /></label>
+            <label class="f"><span class="label">E-mail</span><input name="email" type="email" required autocomplete="email" placeholder="seu@email.com" /></label>
+            <label class="f"><span class="label">Senha</span><input name="senha" type="password" required minlength="4" autocomplete="new-password" placeholder="Mínimo de 4 caracteres" /></label>
+            <p class="msg" role="alert" data-msg></p>
+            <button type="submit" class="btn">Criar conta</button>
+          </form>
+
+          <p class="demo">Mockup: nenhum dado é enviado a servidor e a senha não é guardada. Só o nome e o e-mail ficam neste navegador.</p>
+        </div>
+      </div>
+
+      <!-- ===== Logado ===== -->
+      <div class="dash" id="view-user" hidden>
+        <aside class="me chamfer" style="--c: 20px;">
+          <div class="me__avatar display" id="avatar" aria-hidden="true">A</div>
+          <p class="display me__name" id="u-name">Nome</p>
+          <p class="me__mail" id="u-mail">email</p>
+
+          <div class="me__nav" role="tablist" aria-orientation="vertical" aria-label="Minha conta">
+            <button type="button" role="tab" id="p-orders" aria-selected="true" aria-controls="panel-orders">Pedidos</button>
+            <button type="button" role="tab" id="p-data" aria-selected="false" aria-controls="panel-data" tabindex="-1">Meus dados</button>
+            <button type="button" role="tab" id="p-addr" aria-selected="false" aria-controls="panel-addr" tabindex="-1">Endereços</button>
+          </div>
+          <button type="button" class="logout" id="logout">Sair da conta</button>
+        </aside>
+
+        <div class="panels">
+          <section id="panel-orders" role="tabpanel" aria-labelledby="p-orders">
+            <h2 class="display">Pedidos</h2>
+            <p class="note">Pedidos de exemplo, só para mostrar como o acompanhamento funciona.</p>
+            <ul class="orders">
+              {orders.map((o) => (
+                <li class="order chamfer" style="--c: 16px;">
+                  <div class="order__top">
+                    <p class="label">Pedido {o.id} · {o.date}</p>
+                    <p class:list={['status', { done: o.layers === 12 }]}>{o.status}</p>
+                  </div>
+                  <p class="order__name display">{o.product.name}</p>
+                  <div class="bar" role="img" aria-label={`Produção: ${o.layers} de 12 etapas`}>
+                    {Array.from({ length: 12 }, (_, i) => <i class:list={[{ on: i >= 12 - o.layers, o: i >= 10 && i >= 12 - o.layers }]}></i>)}
+                  </div>
+                  <div class="order__foot">
+                    <span class="label">Camada {o.layers} / 12</span>
+                    <strong>{brl(o.product.price)}</strong>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section id="panel-data" role="tabpanel" aria-labelledby="p-data" hidden>
+            <h2 class="display">Meus dados</h2>
+            <dl class="data">
+              <div><dt class="label">Nome</dt><dd id="d-name">—</dd></div>
+              <div><dt class="label">E-mail</dt><dd id="d-mail">—</dd></div>
+              <div><dt class="label">Cliente desde</dt><dd id="d-since">—</dd></div>
+            </dl>
+          </section>
+
+          <section id="panel-addr" role="tabpanel" aria-labelledby="p-addr" hidden>
+            <h2 class="display">Endereços</h2>
+            <div class="addr chamfer" style="--c: 16px;">
+              <p class="label">Principal · exemplo</p>
+              <p>Rua das Camadas, 12 — Bairro Industrial<br />São Paulo · SP · 01000-000</p>
+            </div>
+            <a class="btn btn--sm btn--ghost add" href={url('/carrinho')}>Ir para a sacola</a>
+          </section>
+        </div>
+      </div>
+    </div>
+  </section>
+</Shell>
+
+<script>
+  type User = { name: string; email: string; since: string };
+  const KEY = 'az-user';
+  const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s)!;
+
+  const readUser = (): User | null => {
+    try { const v = JSON.parse(localStorage.getItem(KEY) || 'null'); return v && v.email ? v : null; } catch { return null; }
+  };
+  const saveUser = (u: User | null) => {
+    try { u ? localStorage.setItem(KEY, JSON.stringify(u)) : localStorage.removeItem(KEY); } catch {}
+    window.dispatchEvent(new Event('az:user-change'));
+  };
+
+  const guest = $('#view-guest');
+  const dash = $('#view-user');
+
+  const show = () => {
+    const u = readUser();
+    guest.hidden = !!u;
+    dash.hidden = !u;
+    if (!u) return;
+    const first = u.name.split(' ')[0] || 'cliente';
+    $('#title').innerHTML = `Olá, <em></em>`;
+    $('#title').querySelector('em')!.textContent = first;
+    $('#avatar').textContent = first.charAt(0).toUpperCase();
+    $('#u-name').textContent = u.name;
+    $('#u-mail').textContent = u.email;
+    $('#d-name').textContent = u.name;
+    $('#d-mail').textContent = u.email;
+    $('#d-since').textContent = u.since;
+  };
+
+  // Abas genéricas (entrar/criar conta e painéis da conta)
+  const tabs = (ids: string[]) => {
+    const btns = ids.map((id) => $<HTMLButtonElement>(`#${id}`));
+    const activate = (btn: HTMLButtonElement) => {
+      btns.forEach((b) => {
+        const on = b === btn;
+        b.setAttribute('aria-selected', String(on));
+        b.tabIndex = on ? 0 : -1;
+        $(`#${b.getAttribute('aria-controls')}`).hidden = !on;
+      });
+    };
+    btns.forEach((b, i) => {
+      b.addEventListener('click', () => activate(b));
+      b.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft' && e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+        const next = btns[(i + (e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : -1) + btns.length) % btns.length];
+        next.focus(); activate(next);
+      });
+    });
+  };
+  tabs(['tab-login', 'tab-signup']);
+  tabs(['p-orders', 'p-data', 'p-addr']);
+
+  const handle = (form: HTMLFormElement, signup: boolean) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const msg = form.querySelector<HTMLElement>('[data-msg]')!;
+      const data = new FormData(form);
+      const email = String(data.get('email') ?? '').trim();
+      const senha = String(data.get('senha') ?? '');
+      const nome = String(data.get('nome') ?? '').trim();
+      if (signup && nome.length < 2) { msg.textContent = 'Diga seu nome para continuar.'; return; }
+      if (!/^\S+@\S+\.\S+$/.test(email)) { msg.textContent = 'Digite um e-mail válido.'; return; }
+      if (senha.length < 4) { msg.textContent = 'A senha precisa de pelo menos 4 caracteres.'; return; }
+      msg.textContent = '';
+      const name = signup ? nome : (readUser()?.name ?? email.split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()));
+      const since = readUser()?.since ?? new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+      saveUser({ name, email, since });
+      form.reset();
+      show();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  };
+  handle($<HTMLFormElement>('#login'), false);
+  handle($<HTMLFormElement>('#signup'), true);
+
+  $('#logout').addEventListener('click', () => {
+    saveUser(null);
+    $('#title').innerHTML = 'Minha <em>conta</em>';
+    show();
+  });
+
+  show();
+</script>
+
+<style>
+  .account { padding-block: clamp(28px, 4vw, 56px) clamp(64px, 8vw, 112px); min-height: 70vh; }
+  .crumbs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .16em; color: var(--steel); }
+  .crumbs a:hover { color: var(--orange); }
+  .crumbs [aria-current] { color: var(--ivory); }
+  .page-title { font-size: clamp(48px, 8vw, 112px); margin: 24px 0 clamp(28px, 4vw, 48px); }
+  [hidden] { display: none !important; }
+
+  /* ----- visitante ----- */
+  .auth { --bg: var(--surface); display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); max-width: 1000px; }
+  .auth__side { display: grid; align-content: start; gap: 20px; padding: clamp(28px, 4vw, 48px); background: var(--surface-2); border-right: 1px solid var(--line); }
+  .auth__side .display { font-size: clamp(32px, 4vw, 48px); }
+  .auth__side p:not(.display) { color: var(--steel); }
+  .auth__perks { display: grid; gap: 10px; font-size: 14px; color: #cfc8ba; }
+  .auth__perks li { display: flex; gap: 12px; align-items: center; }
+  .auth__perks i { flex: none; width: 8px; height: 8px; background: var(--orange); }
+
+  .auth__main { display: grid; align-content: start; gap: 22px; padding: clamp(28px, 4vw, 48px); }
+  .tabs { display: flex; border-bottom: 1px solid var(--line); }
+  .tabs button {
+    flex: 1; padding: 14px 0; background: none; border: 0; border-bottom: 3px solid transparent; margin-bottom: -1px;
+    font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .18em; color: var(--steel);
+    transition: color .15s, border-color .15s;
+  }
+  .tabs button:hover { color: var(--ivory); }
+  .tabs button[aria-selected='true'] { color: var(--ivory); border-bottom-color: var(--orange); }
+
+  .form { display: grid; gap: 18px; }
+  .f { display: grid; gap: 8px; }
+  .f input {
+    height: 48px; padding: 0 14px; background: var(--ink); border: 1px solid var(--line-strong);
+    color: var(--ivory); font: inherit; font-size: 15px;
+  }
+  .f input::placeholder { color: #66666a; }
+  .f input:focus-visible { outline-offset: 0; border-color: var(--orange); }
+  .msg { min-height: 1.3em; font-size: 13px; color: var(--orange); font-weight: 600; }
+  .demo { font-size: 12.5px; color: var(--steel); }
+
+  /* ----- logado ----- */
+  .dash { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+  .me { --bg: var(--surface); display: grid; gap: 6px; padding: 28px; position: sticky; top: 100px; }
+  .me__avatar {
+    display: grid; place-items: center; width: 72px; height: 72px; margin-bottom: 12px;
+    background: var(--orange); color: var(--ink); font-size: 40px;
+    clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  }
+  .me__name { font-size: 30px; line-height: 1; }
+  .me__mail { color: var(--steel); font-size: 13.5px; word-break: break-all; }
+  .me__nav { display: grid; margin-top: 18px; border-top: 1px solid var(--line); }
+  .me__nav button {
+    text-align: left; padding: 14px 0; background: none; border: 0; border-bottom: 1px solid var(--line);
+    font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .18em; color: var(--steel);
+    transition: color .15s, padding .2s;
+  }
+  .me__nav button:hover { color: var(--ivory); }
+  .me__nav button[aria-selected='true'] { color: var(--orange); padding-left: 10px; }
+  .logout { margin-top: 18px; text-align: left; background: none; border: 0; padding: 0; font-size: 12.5px; color: var(--steel); text-decoration: underline; text-underline-offset: 4px; }
+  .logout:hover { color: var(--orange); }
+
+  .panels h2 { font-size: clamp(36px, 5vw, 56px); margin-bottom: 8px; }
+  .note { color: var(--steel); font-size: 13.5px; margin-bottom: 24px; }
+
+  .orders { display: grid; gap: 14px; }
+  .order { --bg: var(--surface); display: grid; gap: 14px; padding: 22px 24px; }
+  .order__top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .status { padding: 4px 10px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .16em; background: var(--orange); color: var(--ink); }
+  .status.done { background: var(--ivory); }
+  .order__name { font-size: 30px; line-height: 1; }
+  .bar { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; }
+  .bar i { height: 10px; background: var(--line); }
+  .bar i.on { background: var(--ivory); }
+  .bar i.o { background: var(--orange); }
+  .order__foot { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .order__foot strong { font-size: 18px; }
+
+  .data { display: grid; margin: 24px 0 0; max-width: 560px; }
+  .data > div { display: grid; gap: 4px; padding: 16px 0; border-top: 1px solid var(--line); }
+  .data dd { margin: 0; font-size: 17px; font-weight: 500; text-transform: capitalize; }
+  #d-mail { text-transform: none; }
+  .addr { --bg: var(--surface); display: grid; gap: 8px; padding: 22px 24px; max-width: 480px; margin: 20px 0; }
+  .add { margin-top: 4px; }
+
+  @media (max-width: 900px) {
+    .auth { grid-template-columns: 1fr; }
+    .auth__side { border-right: 0; border-bottom: 1px solid var(--line); }
+    .dash { grid-template-columns: 1fr; }
+    .me { position: static; }
+  }
+</style>
