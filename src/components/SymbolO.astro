@@ -20,18 +20,20 @@ const stripes = Array.from({ length: N }, (_, i) => ({ y: i * (h + gap), orange:
 ---
 <svg class:list={['symbol-o', { 'is-animated': animate, 'is-playing': play }, className]} viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Símbolo Axis Zero">
   <defs>
-    <clipPath id={`${uid}-clip`}><rect width={W} height={H} rx="76" /></clipPath>
-    <mask id={`${uid}-hole`}>
-      <rect width={W} height={H} fill="#fff" />
-      <rect x={(W - 85) / 2} y={(H - 150) / 2} width="85" height="150" rx="26" fill="#000" />
-    </mask>
+    <!-- Contorno externo + vazado interno num único clipPath (evenodd): mais robusto
+         que máscara quando as faixas estão animando. -->
+    <clipPath id={`${uid}-clip`}>
+      <path
+        clip-rule="evenodd"
+        d="M76 0H124A76 76 0 0 1 200 76V224A76 76 0 0 1 124 300H76A76 76 0 0 1 0 224V76A76 76 0 0 1 76 0Z
+           M83.5 75H116.5A26 26 0 0 1 142.5 101V199A26 26 0 0 1 116.5 225H83.5A26 26 0 0 1 57.5 199V101A26 26 0 0 1 83.5 75Z"
+      />
+    </clipPath>
   </defs>
   <g clip-path={`url(#${uid}-clip)`}>
-    <g mask={`url(#${uid}-hole)`}>
-      {stripes.map((s) => (
-        <rect class="stripe" style={`--i:${N - 1 - s.i}`} y={s.y} width={W} height={h} fill={s.orange ? 'var(--orange)' : 'var(--ivory)'} />
-      ))}
-    </g>
+    {stripes.map((s) => (
+      <rect class="stripe" style={`--i:${N - 1 - s.i}`} y={s.y} width={W} height={h} fill={s.orange ? 'var(--orange)' : 'var(--ivory)'} />
+    ))}
   </g>
 </svg>
 
