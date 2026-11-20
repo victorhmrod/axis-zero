@@ -309,7 +309,7 @@ export const products: Product[] = [
     summary: 'Estátua colecionável · Impressão 3D',
     description:
       'Figura colecionável do Homem de Ferro em sua versão clássica de 1963, impressa em 3D. Peça de decoração geek, ótima para estante ou mesa.',
-    price: 671.50,
+    price: 671.90,
     size: 'Colecionável de mesa',
     material: 'Impressão 3D',
     weight: '—',
@@ -332,7 +332,7 @@ export const products: Product[] = [
     summary: 'Estátua colecionável · 25 cm',
     description:
       'Boneco colecionável do Batman em estilo Absolute, com 25 cm de altura, impresso em 3D. Decoração geek para quem coleciona DC.',
-    price: 271.82,
+    price: 271.90,
     size: '25 cm de altura',
     material: 'Impressão 3D',
     weight: '—',
@@ -355,7 +355,7 @@ export const products: Product[] = [
     summary: 'Diorama colecionável · 36 cm · escala 1:6',
     description:
       'Diorama colecionável do Homem-Aranha Miles Morales em escala 1:6, com 36 cm, impresso em 3D. Uma peça de exposição para a estante.',
-    price: 594.92,
+    price: 594.90,
     size: '36 cm · escala 1:6',
     material: 'Impressão 3D',
     weight: '—',
@@ -379,7 +379,7 @@ export const products: Product[] = [
     summary: 'Boneco colecionável · Impressão 3D',
     description:
       'Boneco colecionável do Sonic, impresso em 3D. Decoração geek e gamer para estante ou mesa.',
-    price: 424.81,
+    price: 424.90,
     size: 'Colecionável de mesa',
     material: 'Impressão 3D',
     weight: '—',
@@ -402,7 +402,7 @@ export const products: Product[] = [
     summary: 'Estátua colecionável · 25 cm',
     description:
       'Boneco colecionável do Lanterna Verde com 25 cm de altura, impresso em 3D. Decoração geek para fãs de DC.',
-    price: 249.82,
+    price: 249.90,
     size: '25 cm de altura',
     material: 'Impressão 3D',
     weight: '—',
@@ -425,7 +425,7 @@ export const products: Product[] = [
     summary: 'Boneco multi articulado · várias posições',
     description:
       'Boneco multi articulado em versão mini: dá para posicionar de várias formas, como uma figura de ação. Divertido de mexer e ótimo para a mesa.',
-    price: 19.47,
+    price: 19.90,
     size: 'Mini · multi articulado',
     material: 'Impressão 3D',
     weight: '—',
@@ -447,7 +447,7 @@ export const products: Product[] = [
     summary: 'Boneco multi articulado · várias posições',
     description:
       'Dragon 13: figura de ação multi articulada, com várias posições possíveis. Peça colecionável para pôr em movimento.',
-    price: 29.67,
+    price: 29.90,
     size: 'Multi articulado',
     material: 'Impressão 3D',
     weight: '—',
@@ -469,7 +469,7 @@ export const products: Product[] = [
     summary: 'Boneco multi articulado · Titan 13',
     description:
       'Dummy 13 Titan 13: boneco multi articulado, versão maior, com várias posições. Figura de ação para colecionar.',
-    price: 23.72,
+    price: 23.90,
     size: 'Multi articulado · Titan 13',
     material: 'Impressão 3D',
     weight: '—',
@@ -491,7 +491,7 @@ export const products: Product[] = [
     summary: 'Boneco multi articulado · 175%',
     description:
       'Doggy 13 em versão gigante (175%): boneco multi articulado com várias posições, em tamanho maior que o padrão.',
-    price: 33.92,
+    price: 33.90,
     size: 'Gigante · 175% do tamanho padrão',
     material: 'Impressão 3D',
     weight: '—',
@@ -513,7 +513,7 @@ export const products: Product[] = [
     summary: 'Esqueleto articulado · flexível',
     description:
       'Esqueleto de T-Rex articulado e flexível, impresso em 3D. Peça colecionável que dá para posicionar e exibir.',
-    price: 84.92,
+    price: 84.90,
     size: 'Articulado e flexível',
     material: 'Impressão 3D',
     weight: '—',
@@ -535,7 +535,7 @@ export const products: Product[] = [
     summary: 'Suporte universal · PS5, Xbox e PC',
     description:
       'Suporte universal para controle gamer e organizador de mesa. Serve para controles de PS5, Xbox e PC e mantém a bancada em ordem.',
-    price: 25.42,
+    price: 24.99,
     size: 'Universal · PS5, Xbox e PC',
     material: 'Impressão 3D',
     weight: '—',
@@ -557,7 +557,7 @@ export const products: Product[] = [
     summary: 'Suporte · Cavaleiro de Hallownest',
     description:
       'Suporte para controle gamer com o Cavaleiro de Hallownest, para PS4, PS5 e Xbox. Decoração e organização no mesmo item.',
-    price: 76.42,
+    price: 75.99,
     size: 'PS4, PS5 e Xbox',
     material: 'Impressão 3D',
     weight: '—',
@@ -580,7 +580,7 @@ export const products: Product[] = [
     summary: 'Cubo sensorial · fidget 3D',
     description:
       'Infinity Cube: cubo sensorial anti estresse que dobra e desdobra sem parar. Para ansiedade, foco ou só para ocupar as mãos.',
-    price: 25.42,
+    price: 24.99,
     size: 'Cubo articulado de mão',
     material: 'Impressão 3D',
     weight: '—',
@@ -625,7 +625,7 @@ export const products: Product[] = [
     summary: 'Brincos · cosplay Hunter x Hunter',
     description:
       'Par de brincos do Chrollo Lucilfer, de Hunter x Hunter, para cosplay. Acessório de anime e geek.',
-    price: 21.17,
+    price: 20.99,
     size: 'Par de brincos',
     material: 'Impressão 3D',
     weight: '—',
@@ -1087,7 +1087,7 @@ export const products: Product[] = [
     summary: 'Hotend · aço endurecido · 0,4 e 0,8 mm',
     description:
       'Hotend em aço endurecido para Bambu Lab A1 e A1 Mini, com bicos de 0,4 mm e 0,8 mm. Mais resistente ao desgaste com filamentos abrasivos.',
-    price: 76.42,
+    price: 75.99,
     size: 'Bambu Lab A1 e A1 Mini',
     material: 'Peça para impressora 3D',
     weight: '—',
@@ -1110,7 +1110,7 @@ export const products: Product[] = [
     summary: 'Hub 4 em 1 · Bambu Lab A1',
     description:
       'Hub de filamento AMS Lite 4 em 1, compatível com Bambu Lab A1 e A1 Mini.',
-    price: 56.02,
+    price: 55.99,
     size: 'Bambu Lab A1 e A1 Mini',
     material: 'Peça para impressora 3D',
     weight: '—',
@@ -1133,7 +1133,7 @@ export const products: Product[] = [
     summary: 'Kit bloco aquecedor · Creality K1',
     description:
       'Hotend original Creality, kit com bloco aquecedor para K1, K1C e K1 Max.',
-    price: 118.92,
+    price: 118.90,
     size: 'Creality K1, K1C e K1 Max',
     material: 'Peça para impressora 3D',
     weight: '—',
@@ -1158,7 +1158,7 @@ export const products: Product[] = [
     summary: 'Colecionável · Impressão 3D',
     description:
       'Doutor Destino (Doctor Doom): figura colecionável impressa em 3D. Colecionável de mesa. Decoração geek para estante ou mesa.',
-    price: 246.42,
+    price: 245.99,
     size: 'Colecionável de mesa',
     material: 'Impressão 3D',
     weight: '—',
@@ -1181,7 +1181,7 @@ export const products: Product[] = [
     summary: 'Colecionável · Impressão 3D',
     description:
       'Goku SSJ4 · Super Saiyajin 4: figura colecionável impressa em 3D. Colecionável de mesa. Decoração geek para estante ou mesa.',
-    price: 203.07,
+    price: 202.99,
     size: 'Colecionável de mesa',
     material: 'Impressão 3D',
     weight: '—',
@@ -1204,7 +1204,7 @@ export const products: Product[] = [
     summary: 'Colecionável · Impressão 3D',
     description:
       'Goku · Dragon Ball: figura colecionável impressa em 3D. Colecionável de mesa. Decoração geek para estante ou mesa.',
-    price: 262.57,
+    price: 262.90,
     size: 'Colecionável de mesa',
     material: 'Impressão 3D',
     weight: '—',
@@ -1227,7 +1227,7 @@ export const products: Product[] = [
     summary: 'Colecionável · Impressão 3D',
     description:
       'Vegeta Super Saiyajin: figura colecionável impressa em 3D. Colecionável de mesa. Decoração geek para estante ou mesa.',
-    price: 577.07,
+    price: 576.99,
     size: 'Colecionável de mesa',
     material: 'Impressão 3D',
     weight: '—',
@@ -1250,7 +1250,7 @@ export const products: Product[] = [
     summary: 'Colecionável · Impressão 3D',
     description:
       'Wolverine (Logan) · X-Men: figura colecionável impressa em 3D. Colecionável de mesa. Decoração geek para estante ou mesa.',
-    price: 263.33,
+    price: 262.99,
     size: 'Colecionável de mesa',
     material: 'Impressão 3D',
     weight: '—',
@@ -1273,7 +1273,7 @@ export const products: Product[] = [
     summary: '24 cm de altura · Impressão 3D',
     description:
       'Ciclope (Cyclops) · X-Men: figura colecionável impressa em 3D. 24 cm de altura. Decoração geek para estante ou mesa.',
-    price: 280.33,
+    price: 279.99,
     size: '24 cm de altura',
     material: 'Impressão 3D',
     weight: '—',
@@ -1296,7 +1296,7 @@ export const products: Product[] = [
     summary: 'Colecionável · Impressão 3D',
     description:
       'Batman Clássico: figura colecionável impressa em 3D. Colecionável de mesa. Decoração geek para estante ou mesa.',
-    price: 288.83,
+    price: 288.90,
     size: 'Colecionável de mesa',
     material: 'Impressão 3D',
     weight: '—',
@@ -1319,7 +1319,7 @@ export const products: Product[] = [
     summary: 'Colecionável · Impressão 3D',
     description:
       'Rayquaza Shiny com Base de Nuvem: figura colecionável impressa em 3D. Colecionável de mesa. Decoração geek para estante ou mesa.',
-    price: 174.17,
+    price: 173.99,
     size: 'Colecionável de mesa',
     material: 'Impressão 3D',
     weight: '—',
@@ -1342,7 +1342,7 @@ export const products: Product[] = [
     summary: 'Action figure · Impressão 3D',
     description:
       'Hornet · Hollow Knight Silksong: figura colecionável impressa em 3D. Action figure. Decoração geek para estante ou mesa.',
-    price: 110.42,
+    price: 109.99,
     size: 'Action figure',
     material: 'Impressão 3D',
     weight: '—',
@@ -1365,7 +1365,7 @@ export const products: Product[] = [
     summary: '20 cm de altura · Impressão 3D',
     description:
       'Bulbasaur · Pokémon 20 cm: figura colecionável impressa em 3D. 20 cm de altura. Decoração geek para estante ou mesa.',
-    price: 101.92,
+    price: 101.90,
     size: '20 cm de altura',
     material: 'Impressão 3D',
     weight: '—',
@@ -1388,7 +1388,7 @@ export const products: Product[] = [
     summary: '20 cm de altura · Impressão 3D',
     description:
       'Charizard · Pokémon 20 cm: figura colecionável impressa em 3D. 20 cm de altura. Decoração geek para estante ou mesa.',
-    price: 81.52,
+    price: 81.90,
     size: '20 cm de altura',
     material: 'Impressão 3D',
     weight: '—',
@@ -1411,7 +1411,7 @@ export const products: Product[] = [
     summary: '20 cm de altura · Impressão 3D',
     description:
       'Squirtle · Pokémon 20 cm: figura colecionável impressa em 3D. 20 cm de altura. Decoração geek para estante ou mesa.',
-    price: 144.42,
+    price: 143.99,
     size: '20 cm de altura',
     material: 'Impressão 3D',
     weight: '—',
@@ -1434,7 +1434,7 @@ export const products: Product[] = [
     summary: '20 cm de altura · Impressão 3D',
     description:
       'Charmander · Pokémon 20 cm: figura colecionável impressa em 3D. 20 cm de altura. Decoração geek para estante ou mesa.',
-    price: 82.37,
+    price: 81.99,
     size: '20 cm de altura',
     material: 'Impressão 3D',
     weight: '—',
@@ -1457,7 +1457,7 @@ export const products: Product[] = [
     summary: '21 cm de altura · Impressão 3D',
     description:
       'Gengar · Pokémon 21 cm: figura colecionável impressa em 3D. 21 cm de altura. Decoração geek para estante ou mesa.',
-    price: 72.17,
+    price: 71.99,
     size: '21 cm de altura',
     material: 'Impressão 3D',
     weight: '—',
@@ -1480,7 +1480,7 @@ export const products: Product[] = [
     summary: '20 cm de altura · Impressão 3D',
     description:
       'Cubone · Pokémon 20 cm: figura colecionável impressa em 3D. 20 cm de altura. Decoração geek para estante ou mesa.',
-    price: 87.47,
+    price: 87.90,
     size: '20 cm de altura',
     material: 'Impressão 3D',
     weight: '—',
@@ -1503,7 +1503,7 @@ export const products: Product[] = [
     summary: '20 cm de altura · Impressão 3D',
     description:
       'Snivy · Pokémon 20 cm: figura colecionável impressa em 3D. 20 cm de altura. Decoração geek para estante ou mesa.',
-    price: 76.42,
+    price: 75.99,
     size: '20 cm de altura',
     material: 'Impressão 3D',
     weight: '—',
@@ -1526,7 +1526,7 @@ export const products: Product[] = [
     summary: 'Multi articulado · Impressão 3D',
     description:
       'Lucky 13. Multi articulado. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 23.72,
+    price: 23.90,
     size: 'Multi articulado',
     material: 'Impressão 3D',
     weight: '—',
@@ -1548,7 +1548,7 @@ export const products: Product[] = [
     summary: 'Multi articulado · Impressão 3D',
     description:
       'Carbon 13 Tipo M. Multi articulado. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 23.72,
+    price: 23.90,
     size: 'Multi articulado',
     material: 'Impressão 3D',
     weight: '—',
@@ -1570,7 +1570,7 @@ export const products: Product[] = [
     summary: 'Multi articulado · Impressão 3D',
     description:
       'Springtrap Carbon 13 (FNAF). Multi articulado. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 37.32,
+    price: 36.99,
     size: 'Multi articulado',
     material: 'Impressão 3D',
     weight: '—',
@@ -1593,7 +1593,7 @@ export const products: Product[] = [
     summary: 'Multi articulado · Impressão 3D',
     description:
       'EASY 13. Multi articulado. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 21.17,
+    price: 20.99,
     size: 'Multi articulado',
     material: 'Impressão 3D',
     weight: '—',
@@ -1615,7 +1615,7 @@ export const products: Product[] = [
     summary: 'Multi articulado · Impressão 3D',
     description:
       'Mecha 13. Multi articulado. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 93.42,
+    price: 92.99,
     size: 'Multi articulado',
     material: 'Impressão 3D',
     weight: '—',
@@ -1637,7 +1637,7 @@ export const products: Product[] = [
     summary: 'Titan 13 · com caixa personalizada · Impressão 3D',
     description:
       'Dummy 13 Batman · Titan 13. Titan 13 · com caixa personalizada. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 33.92,
+    price: 33.90,
     size: 'Titan 13 · com caixa personalizada',
     material: 'Impressão 3D',
     weight: '—',
@@ -1660,7 +1660,7 @@ export const products: Product[] = [
     summary: 'Titan 13 · com caixa personalizada · Impressão 3D',
     description:
       'Dummy 13 Homem de Ferro · Titan 13. Titan 13 · com caixa personalizada. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 33.92,
+    price: 33.90,
     size: 'Titan 13 · com caixa personalizada',
     material: 'Impressão 3D',
     weight: '—',
@@ -1683,7 +1683,7 @@ export const products: Product[] = [
     summary: 'Titan 13 · com caixa personalizada · Impressão 3D',
     description:
       'Dummy 13 Thor · Titan 13. Titan 13 · com caixa personalizada. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 33.92,
+    price: 33.90,
     size: 'Titan 13 · com caixa personalizada',
     material: 'Impressão 3D',
     weight: '—',
@@ -1706,7 +1706,7 @@ export const products: Product[] = [
     summary: 'Titan 13 · com caixa personalizada · Impressão 3D',
     description:
       'Dummy 13 Gavião Arqueiro · Titan 13. Titan 13 · com caixa personalizada. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 33.92,
+    price: 33.90,
     size: 'Titan 13 · com caixa personalizada',
     material: 'Impressão 3D',
     weight: '—',
@@ -1729,7 +1729,7 @@ export const products: Product[] = [
     summary: 'Titan 13 · com caixa personalizada · Impressão 3D',
     description:
       'Dummy 13 Hulk · Titan 13. Titan 13 · com caixa personalizada. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 33.92,
+    price: 33.90,
     size: 'Titan 13 · com caixa personalizada',
     material: 'Impressão 3D',
     weight: '—',
@@ -1752,7 +1752,7 @@ export const products: Product[] = [
     summary: 'Multi articulado · Impressão 3D',
     description:
       'BD-1 Star Wars · Droid Multi Articulado. Multi articulado. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 118.92,
+    price: 118.90,
     size: 'Multi articulado',
     material: 'Impressão 3D',
     weight: '—',
@@ -1775,7 +1775,7 @@ export const products: Product[] = [
     summary: 'Multi articulado · Impressão 3D',
     description:
       'Star Wars B1 · Droid de Batalha. Multi articulado. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 63.67,
+    price: 63.90,
     size: 'Multi articulado',
     material: 'Impressão 3D',
     weight: '—',
@@ -1798,7 +1798,7 @@ export const products: Product[] = [
     summary: 'Multi articulado · Impressão 3D',
     description:
       'Star Wars STAP · Multi Articulado. Multi articulado. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 49.22,
+    price: 48.99,
     size: 'Multi articulado',
     material: 'Impressão 3D',
     weight: '—',
@@ -1821,7 +1821,7 @@ export const products: Product[] = [
     summary: 'Articulado · Premium · Impressão 3D',
     description:
       'Dragão Japonês Articulado. Articulado · Premium. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 59.42,
+    price: 58.99,
     size: 'Articulado · Premium',
     material: 'Impressão 3D',
     weight: '—',
@@ -1843,7 +1843,7 @@ export const products: Product[] = [
     summary: 'Articulado · Premium · Impressão 3D',
     description:
       'Dragão Azure Articulado. Articulado · Premium. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 59.42,
+    price: 58.99,
     size: 'Articulado · Premium',
     material: 'Impressão 3D',
     weight: '—',
@@ -1865,7 +1865,7 @@ export const products: Product[] = [
     summary: 'Articulado · Premium · Impressão 3D',
     description:
       'Dragão das Águas Articulado. Articulado · Premium. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 59.42,
+    price: 58.99,
     size: 'Articulado · Premium',
     material: 'Impressão 3D',
     weight: '—',
@@ -1887,7 +1887,7 @@ export const products: Product[] = [
     summary: 'Articulado · Premium · Impressão 3D',
     description:
       'Dragão da Floresta Articulado. Articulado · Premium. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 59.42,
+    price: 58.99,
     size: 'Articulado · Premium',
     material: 'Impressão 3D',
     weight: '—',
@@ -1909,7 +1909,7 @@ export const products: Product[] = [
     summary: 'Articulada · Premium · Impressão 3D',
     description:
       'Capivara Articulada Fuzzy. Articulada · Premium. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 42.42,
+    price: 41.99,
     size: 'Articulada · Premium',
     material: 'Impressão 3D',
     weight: '—',
@@ -1931,7 +1931,7 @@ export const products: Product[] = [
     summary: 'Articulado · com base · Impressão 3D',
     description:
       'Axolote Articulado com Base. Articulado · com base. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 50.92,
+    price: 50.90,
     size: 'Articulado · com base',
     material: 'Impressão 3D',
     weight: '—',
@@ -1953,7 +1953,7 @@ export const products: Product[] = [
     summary: 'Articulado e flexível · Premium · Impressão 3D',
     description:
       'T-Rex Articulado Flexível Premium. Articulado e flexível · Premium. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 76.42,
+    price: 75.99,
     size: 'Articulado e flexível · Premium',
     material: 'Impressão 3D',
     weight: '—',
@@ -1975,7 +1975,7 @@ export const products: Product[] = [
     summary: 'Miniatura · Impressão 3D',
     description:
       'Esqueleto T-Rex Miniatura. Miniatura. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 21.17,
+    price: 20.99,
     size: 'Miniatura',
     material: 'Impressão 3D',
     weight: '—',
@@ -1997,7 +1997,7 @@ export const products: Product[] = [
     summary: '6 cm · Impressão 3D',
     description:
       'Barquinho Benchy 6 cm. 6 cm. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 10.97,
+    price: 10.99,
     size: '6 cm',
     material: 'Impressão 3D',
     weight: '—',
@@ -2019,7 +2019,7 @@ export const products: Product[] = [
     summary: '5 cm · Impressão 3D',
     description:
       'Mini Charizard · Pokémon 5 cm. 5 cm. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 35.62,
+    price: 35.90,
     size: '5 cm',
     material: 'Impressão 3D',
     weight: '—',
@@ -2042,7 +2042,7 @@ export const products: Product[] = [
     summary: '10 cm · Impressão 3D',
     description:
       'Mini Squirtle · Pokémon 10 cm. 10 cm. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 48.37,
+    price: 47.99,
     size: '10 cm',
     material: 'Impressão 3D',
     weight: '—',
@@ -2065,7 +2065,7 @@ export const products: Product[] = [
     summary: '5 cm · Impressão 3D',
     description:
       'Mini Cubone · Pokémon 5 cm. 5 cm. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 25.42,
+    price: 24.99,
     size: '5 cm',
     material: 'Impressão 3D',
     weight: '—',
@@ -2088,7 +2088,7 @@ export const products: Product[] = [
     summary: '5 cm · Impressão 3D',
     description:
       'Mini Snivy · Pokémon 5 cm. 5 cm. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 29.67,
+    price: 29.90,
     size: '5 cm',
     material: 'Impressão 3D',
     weight: '—',
@@ -2111,7 +2111,7 @@ export const products: Product[] = [
     summary: 'Troféu de decoração · Impressão 3D',
     description:
       'Troféu Taça da Copa do Mundo 2026. Troféu de decoração. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 101.92,
+    price: 101.90,
     size: 'Troféu de decoração',
     material: 'Impressão 3D',
     weight: '—',
@@ -2134,7 +2134,7 @@ export const products: Product[] = [
     summary: 'Compatível com Dummy 13 Titan 13 · Impressão 3D',
     description:
       'Conjunto de Acessórios Combate de Elite · Titan 13. Compatível com Dummy 13 Titan 13. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 24.57,
+    price: 24.90,
     size: 'Compatível com Dummy 13 Titan 13',
     material: 'Impressão 3D',
     weight: '—',
@@ -2156,7 +2156,7 @@ export const products: Product[] = [
     summary: 'Para poses e exposição · Impressão 3D',
     description:
       'Base Suporte para Dummy 13 e Lucky 13. Para poses e exposição. Peça colecionável impressa em 3D, para posicionar e exibir.',
-    price: 23.72,
+    price: 23.90,
     size: 'Para poses e exposição',
     material: 'Impressão 3D',
     weight: '—',
@@ -2178,7 +2178,7 @@ export const products: Product[] = [
     summary: 'Chaveiro · Impressão 3D',
     description:
       'Chaveiro Banguela · Como Treinar o Seu Dragão. Chaveiro. Item útil e divertido impresso em 3D, com acabamento caprichado.',
-    price: 10.78,
+    price: 10.90,
     size: 'Chaveiro',
     material: 'Impressão 3D',
     weight: '—',
@@ -2200,7 +2200,7 @@ export const products: Product[] = [
     summary: '7 cm · Impressão 3D',
     description:
       'Chaveiro Tubarão Articulado 7 cm. 7 cm. Item útil e divertido impresso em 3D, com acabamento caprichado.',
-    price: 9.27,
+    price: 8.99,
     size: '7 cm',
     material: 'Impressão 3D',
     weight: '—',
@@ -2222,7 +2222,7 @@ export const products: Product[] = [
     summary: '7 cm · Impressão 3D',
     description:
       'Chaveiro Polvo Articulado 7 cm. 7 cm. Item útil e divertido impresso em 3D, com acabamento caprichado.',
-    price: 9.27,
+    price: 8.99,
     size: '7 cm',
     material: 'Impressão 3D',
     weight: '—',
@@ -2244,7 +2244,7 @@ export const products: Product[] = [
     summary: 'Organizador de mesa · Impressão 3D',
     description:
       'Porta-Cartão Máquina de Costura. Organizador de mesa. Item útil e divertido impresso em 3D, com acabamento caprichado.',
-    price: 42.42,
+    price: 41.99,
     size: 'Organizador de mesa',
     material: 'Impressão 3D',
     weight: '—',
@@ -2266,7 +2266,7 @@ export const products: Product[] = [
     summary: 'Com nome e logo · Impressão 3D',
     description:
       'Porta-Cartão de Visita Personalizado. Com nome e logo. Item útil e divertido impresso em 3D, com acabamento caprichado.',
-    price: 33.92,
+    price: 33.90,
     size: 'Com nome e logo',
     material: 'Impressão 3D',
     weight: '—',
@@ -2288,7 +2288,7 @@ export const products: Product[] = [
     summary: 'Organizador de mesa · Impressão 3D',
     description:
       'Porta-Canetas Vértebra Anatômica. Organizador de mesa. Item útil e divertido impresso em 3D, com acabamento caprichado.',
-    price: 33.92,
+    price: 33.90,
     size: 'Organizador de mesa',
     material: 'Impressão 3D',
     weight: '—',
@@ -2310,7 +2310,7 @@ export const products: Product[] = [
     summary: 'Suporte de mesa · Impressão 3D',
     description:
       'Suporte Fone Headset Stick To The Beat. Suporte de mesa. Item útil e divertido impresso em 3D, com acabamento caprichado.',
-    price: 54.32,
+    price: 53.99,
     size: 'Suporte de mesa',
     material: 'Impressão 3D',
     weight: '—',
@@ -2332,7 +2332,7 @@ export const products: Product[] = [
     summary: 'Ajustável · Impressão 3D',
     description:
       'Suporte Ajustável para Placa de Vídeo (GPU) e HD. Ajustável. Item útil e divertido impresso em 3D, com acabamento caprichado.',
-    price: 24.57,
+    price: 24.90,
     size: 'Ajustável',
     material: 'Impressão 3D',
     weight: '—',
@@ -2354,7 +2354,7 @@ export const products: Product[] = [
     summary: 'Organizador de cabo, sem furar · Impressão 3D',
     description:
       'Suporte de Tomada para Echo Dot 4 e 5. Organizador de cabo, sem furar. Item útil e divertido impresso em 3D, com acabamento caprichado.',
-    price: 17.77,
+    price: 17.90,
     size: 'Organizador de cabo, sem furar',
     material: 'Impressão 3D',
     weight: '—',
@@ -2376,7 +2376,7 @@ export const products: Product[] = [
     summary: 'Tamanho real · Impressão 3D',
     description:
       'Martelo Mjölnir de Thor (tamanho real). Tamanho real. Peça para cosplay e decoração, impressa em 3D.',
-    price: 930.67,
+    price: 930.90,
     size: 'Tamanho real',
     material: 'Impressão 3D',
     weight: '—',
@@ -2399,7 +2399,7 @@ export const products: Product[] = [
     summary: 'Tamanho real · Impressão 3D',
     description:
       'Capacete Thor (tamanho real). Tamanho real. Peça para cosplay e decoração, impressa em 3D.',
-    price: 849.92,
+    price: 849.90,
     size: 'Tamanho real',
     material: 'Impressão 3D',
     weight: '—',
@@ -2422,7 +2422,7 @@ export const products: Product[] = [
     summary: 'Cosplay · Impressão 3D',
     description:
       'Varinha Mágica Star Butterfly. Cosplay. Peça para cosplay e decoração, impressa em 3D.',
-    price: 92.65,
+    price: 92.90,
     size: 'Cosplay',
     material: 'Impressão 3D',
     weight: '—',
@@ -2445,7 +2445,7 @@ export const products: Product[] = [
     summary: 'Peça para impressora 3D',
     description:
       'Hotend Completo Anycubic Kobra 3 Max. Compatível com: Anycubic Kobra 3 Max · 24 V · 0,4 mm. Peça de reposição ou acessório para impressora 3D.',
-    price: 101.92,
+    price: 101.90,
     size: 'Anycubic Kobra 3 Max · 24 V · 0,4 mm',
     material: 'Peça para impressora 3D',
     weight: '—',
@@ -2467,7 +2467,7 @@ export const products: Product[] = [
     summary: 'Peça para impressora 3D',
     description:
       'Hotend Completo Anycubic Kobra 3. Compatível com: Anycubic Kobra 3. Peça de reposição ou acessório para impressora 3D.',
-    price: 115.52,
+    price: 115.90,
     size: 'Anycubic Kobra 3',
     material: 'Peça para impressora 3D',
     weight: '—',
@@ -2489,7 +2489,7 @@ export const products: Product[] = [
     summary: 'Peça para impressora 3D',
     description:
       'Capa de Silicone Anycubic Kobra 3. Compatível com: Anycubic Kobra 3 / Combo. Peça de reposição ou acessório para impressora 3D.',
-    price: 25.42,
+    price: 24.99,
     size: 'Anycubic Kobra 3 / Combo',
     material: 'Peça para impressora 3D',
     weight: '—',
@@ -2511,7 +2511,7 @@ export const products: Product[] = [
     summary: 'Peça para impressora 3D',
     description:
       'Limpador de Bico (Nozzle Wiper) Bambu Lab. Compatível com: Bambu Lab A1. Peça de reposição ou acessório para impressora 3D.',
-    price: 16.07,
+    price: 15.99,
     size: 'Bambu Lab A1',
     material: 'Peça para impressora 3D',
     weight: '—',
@@ -2533,7 +2533,7 @@ export const products: Product[] = [
     summary: 'Peça para impressora 3D',
     description:
       'Sensor de Pressão Strain Gauge Anycubic. Compatível com: Anycubic. Peça de reposição ou acessório para impressora 3D.',
-    price: 42.42,
+    price: 41.99,
     size: 'Anycubic',
     material: 'Peça para impressora 3D',
     weight: '—',
