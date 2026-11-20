@@ -1,0 +1,98 @@
+---
+import ProductArt from './ProductArt.astro';
+import { products, categories, brl } from '../data/products';
+import { url } from '../utils/url';
+
+const tiles = categories
+  .filter((c) => c.group === 'equipamentos')
+  .map((c) => {
+    const items = products.filter((p) => p.category === c.slug);
+    return {
+      ...c,
+      kind: items[0].kind,
+      count: items.length,
+      from: Math.min(...items.map((p) => p.price)),
+    };
+  });
+---
+<section class="section equip" id="equipamentos" aria-labelledby="equip-title">
+  <div class="container">
+    <p class="eyebrow" data-reveal><span class="num">05</span> Impressoras e insumos</p>
+
+    <div class="equip__head">
+      <h2 id="equip-title" class="display" data-reveal="clip">Monte a sua <em>bancada</em></h2>
+      <p data-reveal style="--d:2">
+        Além das peças prontas, vendemos <strong>impressoras</strong>, <strong>filamentos</strong> e <strong>resinas</strong>{' '}para você imprimir as suas, em FDM ou em resina 8K e 16K.
+      </p>
+    </div>
+
+    <ul class="equip__grid">
+      {tiles.map((t, i) => (
+        <li data-reveal style={`--d:${i}`}>
+          <a class="tile chamfer chamfer--hover" style="--c: 22px;" href={url(`/colecao?categoria=${t.slug}`)} data-cursor="Ver">
+            <div class="tile__art" aria-hidden="true"><ProductArt kind={t.kind} uid={`equip-${t.slug}`} /></div>
+            <div class="tile__body">
+              <h3 class="display">{t.label}</h3>
+              <p>{t.desc}</p>
+              <div class="tile__foot">
+                <span class="label">{t.count} {t.count === 1 ? 'item' : 'itens'} · a partir de <strong>{brl(t.from)}</strong></span>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7" /></svg>
+              </div>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .equip__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
+    gap: 24px 64px;
+    align-items: end;
+    margin: 28px 0 clamp(32px, 5vw, 56px);
+  }
+  .equip__head h2 { font-size: clamp(44px, 7vw, 96px); }
+  .equip__head p { color: var(--steel); max-width: 44ch; }
+  .equip__head strong { color: var(--ivory); font-weight: 600; }
+
+  .equip__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .tile { display: flex; flex-direction: column; height: 100%; --bg: var(--surface); }
+  .tile__art {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    padding: 6% 22%;
+    background: var(--surface-2);
+    overflow: hidden;
+  }
+  .tile__art::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 32px 32px;
+    opacity: .3;
+    mask-image: radial-gradient(circle at center, #000 25%, transparent 75%);
+    -webkit-mask-image: radial-gradient(circle at center, #000 25%, transparent 75%);
+  }
+  .tile__art :global(svg) { position: relative; transition: transform .45s cubic-bezier(.2,.8,.2,1); }
+  .tile:hover .tile__art :global(svg) { transform: translateY(-6px) scale(1.04); }
+  .tile__body { display: grid; gap: 8px; padding: 22px 24px 24px; }
+  .tile__body h3 { font-size: 36px; line-height: 1; }
+  .tile__body p { color: var(--steel); font-size: 14.5px; }
+  .tile__foot {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    margin-top: 10px; padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+  .tile__foot strong { color: var(--ivory); }
+  .tile:hover .tile__foot svg { color: var(--orange); transform: translateX(3px); }
+  .tile__foot svg { transition: transform .2s, color .2s; }
+
+  @media (max-width: 1000px) { .equip__grid { grid-template-columns: 1fr 1fr; } .equip__grid li:nth-child(3) { grid-column: 1 / -1; } }
+  @media (max-width: 760px) { .equip__head { grid-template-columns: 1fr; } }
+  @media (max-width: 600px) { .equip__grid { grid-template-columns: 1fr; } .equip__grid li:nth-child(3) { grid-column: auto; } }
+</style>

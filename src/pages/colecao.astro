@@ -20,9 +20,9 @@ const filters = [
       <p class="eyebrow" data-reveal><span class="num">02</span> Coleção</p>
 
       <div class="page-head__row">
-        <h1 class="display" data-reveal="clip">Toda a <em>coleção</em></h1>
+        <h1 class="display" id="colecao-title" data-reveal="clip">Toda a <em>coleção</em></h1>
         <p class="page-head__text" id="colecao-resumo" data-reveal style="--d:2">
-          Peças impressas em resina, lixadas e pintadas à mão. Edições limitadas saem numeradas.
+          Peças impressas em resina, lixadas e pintadas à mão, e também impressoras, filamentos e resinas para você imprimir as suas.
         </p>
       </div>
     </div>
@@ -79,6 +79,20 @@ const filters = [
   const count = document.querySelector<HTMLElement>('#count')!;
   const empty = document.querySelector<HTMLElement>('#empty')!;
   const valid = new Set(chips.map((c) => c.dataset.filter));
+  const title = document.querySelector<HTMLElement>('#colecao-title')!;
+  const lead = document.querySelector<HTMLElement>('#colecao-resumo')!;
+  const defaultLead = lead.textContent ?? '';
+  const heads: Record<string, [string, string, string]> = {
+    tudo: ['Toda a ', 'coleção', defaultLead],
+    limitadas: ['Edições ', 'limitadas', 'Peças numeradas, em tiragem pequena. Quando acabam, acabam.'],
+    estatuas: ['', 'Estátuas', 'Peças de exposição, esculpidas em detalhe e finalizadas à mão.'],
+    colecionaveis: ['', 'Colecionáveis', 'Edições numeradas e peças de estante, com base assinada.'],
+    gadgets: ['', 'Gadgets', 'Utilidades de mesa com acabamento de ateliê.'],
+    cosplay: ['', 'Cosplay', 'Capacetes, armaduras e props vestíveis.'],
+    impressoras: ['', 'Impressoras', 'FDM e resina 8K ou 16K, para imprimir as suas próprias peças.'],
+    filamentos: ['', 'Filamentos', 'PLA+, PETG e TPU em carretéis, em várias cores.'],
+    resinas: ['', 'Resinas', 'Standard, alta definição e resistente, para impressoras 8K e 16K.'],
+  };
 
   const fromUrl = () => {
     const q = new URLSearchParams(location.search);
@@ -107,6 +121,11 @@ const filters = [
     sorted.forEach((li, i) => { li.style.order = String(i); });
 
     chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.filter === filter)));
+    const [pre, word, text] = heads[filter] ?? heads.tudo;
+    title.replaceChildren(document.createTextNode(pre));
+    const em = document.createElement('em'); em.textContent = word; title.append(em);
+    lead.textContent = text;
+    document.title = filter === 'tudo' ? 'Coleção · Axis Zero' : `${pre}${word} · Axis Zero`;
     count.textContent = `${visible} ${visible === 1 ? 'peça' : 'peças'}`;
     empty.hidden = visible > 0;
   };

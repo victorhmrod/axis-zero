@@ -1,12 +1,23 @@
-export type Kind = 'estatua' | 'capacete' | 'cubo' | 'engrenagem' | 'busto' | 'automato';
-export type CategorySlug = 'estatuas' | 'colecionaveis' | 'gadgets' | 'cosplay';
+export type Kind =
+  | 'estatua' | 'capacete' | 'cubo' | 'engrenagem' | 'busto' | 'automato'
+  | 'impressora' | 'filamento' | 'resina';
+export type CategorySlug =
+  | 'estatuas' | 'colecionaveis' | 'gadgets' | 'cosplay'
+  | 'impressoras' | 'filamentos' | 'resinas';
 
-export const categories: { slug: CategorySlug; label: string; desc: string }[] = [
-  { slug: 'estatuas', label: 'Estátuas', desc: 'Peças de exposição de 20 a 60 cm.' },
-  { slug: 'colecionaveis', label: 'Colecionáveis', desc: 'Edições numeradas, base assinada.' },
-  { slug: 'gadgets', label: 'Gadgets', desc: 'Utilidades de mesa com acabamento de ateliê.' },
-  { slug: 'cosplay', label: 'Cosplay', desc: 'Capacetes, armaduras e props vestíveis.' },
+export const categories: { slug: CategorySlug; label: string; desc: string; group: 'pecas' | 'equipamentos' }[] = [
+  { slug: 'estatuas', label: 'Estátuas', desc: 'Peças de exposição de 20 a 60 cm.', group: 'pecas' },
+  { slug: 'colecionaveis', label: 'Colecionáveis', desc: 'Edições numeradas, base assinada.', group: 'pecas' },
+  { slug: 'gadgets', label: 'Gadgets', desc: 'Utilidades de mesa com acabamento de ateliê.', group: 'pecas' },
+  { slug: 'cosplay', label: 'Cosplay', desc: 'Capacetes, armaduras e props vestíveis.', group: 'pecas' },
+  { slug: 'impressoras', label: 'Impressoras', desc: 'FDM e resina 8K ou 16K.', group: 'equipamentos' },
+  { slug: 'filamentos', label: 'Filamentos', desc: 'PLA+, PETG e TPU em carretéis de 1 kg.', group: 'equipamentos' },
+  { slug: 'resinas', label: 'Resinas', desc: 'Standard e alta definição para 8K e 16K.', group: 'equipamentos' },
 ];
+
+/** Equipamentos e insumos (impressoras, filamentos, resinas) não têm "camadas" nem edição numerada. */
+export const isSupply = (p: Pick<Product, 'category'>) =>
+  p.category === 'impressoras' || p.category === 'filamentos' || p.category === 'resinas';
 
 export interface Product {
   slug: string;
@@ -25,6 +36,9 @@ export interface Product {
   badge?: { label: string; tone: 'orange' | 'ivory' | 'steel' };
   edition?: { made: number; total: number };
   layers: number;       // nº de camadas (só informativo)
+  specs?: [string, string][]; // ficha técnica própria (substitui a padrão)
+  optionLabel?: string;       // nome da opção escolhida (padrão: "Acabamento"; ex.: "Cor")
+  leadLabel?: string;         // padrão "Produção"; para estoque, "Envio"
   image?: string;       // foto em /public (ex.: '/products/gta6-tribute.webp'); sem arquivo, usa a arte provisória
   note?: string;        // aviso curto exibido na página do produto
 }
@@ -283,6 +297,246 @@ export const products: Product[] = [
     finishes: ['Marfim', 'Laranja', 'Cinza aço'],
     badge: { label: 'Novo', tone: 'ivory' },
     layers: 1700,
+  },
+
+  // ===== Impressoras, filamentos e resinas (EXEMPLOS: trocar por produtos, preços e fichas reais) =====
+  {
+    slug: 'impressora-fdm-256',
+    name: 'Impressora FDM 256',
+    category: 'impressoras',
+    kind: 'impressora',
+    summary: 'FDM · 256 mm³ · cama aquecida',
+    description:
+      'Impressora FDM de mesa para peças grandes e funcionais. Cama aquecida, nivelamento automático e área de impressão de 256 mm em cada eixo. Boa para protótipos, suportes, cosplay e peças sob medida.',
+    price: 3290,
+    size: '256 × 256 × 256 mm de volume',
+    material: 'PLA, PETG, TPU e outros',
+    weight: '9 kg',
+    finish: '—',
+    leadTime: '2 a 4 dias úteis',
+    leadLabel: 'Envio',
+    badge: { label: 'FDM', tone: 'ivory' },
+    layers: 0,
+    specs: [
+      ['Tecnologia', 'FDM'],
+      ['Volume de impressão', '256 × 256 × 256 mm'],
+      ['Cama', 'Aquecida, até 100 °C'],
+      ['Nivelamento', 'Automático'],
+      ['Materiais', 'PLA, PETG, TPU e outros'],
+      ['Envio', '2 a 4 dias úteis'],
+    ],
+  },
+  {
+    slug: 'impressora-resina-8k',
+    name: 'Impressora Resina 8K',
+    category: 'impressoras',
+    kind: 'impressora',
+    summary: 'Resina · tela 8K · detalhe fino',
+    description:
+      'Impressora de resina com tela 8K: ótima para miniaturas, rostos e peças de exposição. É a mesma classe de resolução que usamos nas estátuas da coleção.',
+    price: 2890,
+    size: 'Volume de 218 × 123 × 250 mm',
+    material: 'Resinas fotossensíveis 405 nm',
+    weight: '7 kg',
+    finish: '—',
+    leadTime: '2 a 4 dias úteis',
+    leadLabel: 'Envio',
+    badge: { label: '8K', tone: 'ivory' },
+    layers: 0,
+    note: 'Resina fotossensível: use luvas e proteção e trabalhe em local ventilado.',
+    specs: [
+      ['Tecnologia', 'Resina (MSLA)'],
+      ['Resolução da tela', '8K'],
+      ['Volume de impressão', '218 × 123 × 250 mm'],
+      ['Resinas', 'Fotossensíveis 405 nm'],
+      ['Envio', '2 a 4 dias úteis'],
+    ],
+  },
+  {
+    slug: 'impressora-resina-16k',
+    name: 'Impressora Resina 16K',
+    category: 'impressoras',
+    kind: 'impressora',
+    summary: 'Resina · tela 16K · detalhe máximo',
+    description:
+      'Para quem não abre mão de detalhe: tela 16K, pixels menores e superfície mais lisa, com linhas de camada ainda menos visíveis. A escolha para rostos, texturas e miniaturas de alta fidelidade.',
+    price: 6490,
+    size: 'Volume de 218 × 123 × 260 mm',
+    material: 'Resinas fotossensíveis 405 nm',
+    weight: '8 kg',
+    finish: '—',
+    leadTime: '3 a 5 dias úteis',
+    leadLabel: 'Envio',
+    badge: { label: '16K', tone: 'orange' },
+    layers: 0,
+    note: 'Resina fotossensível: use luvas e proteção e trabalhe em local ventilado.',
+    specs: [
+      ['Tecnologia', 'Resina (MSLA)'],
+      ['Resolução da tela', '16K'],
+      ['Volume de impressão', '218 × 123 × 260 mm'],
+      ['Resinas', 'Fotossensíveis 405 nm'],
+      ['Envio', '3 a 5 dias úteis'],
+    ],
+  },
+  {
+    slug: 'filamento-pla-plus',
+    name: 'Filamento PLA+ 1 kg',
+    category: 'filamentos',
+    kind: 'filamento',
+    summary: 'PLA+ · 1,75 mm · carretel de 1 kg',
+    description:
+      'PLA+ de uso geral: fácil de imprimir, bom acabamento e mais resistente que o PLA comum. Vai bem em protótipos, peças decorativas e cosplay.',
+    price: 119,
+    size: '1,75 mm · 1 kg',
+    material: 'PLA+',
+    weight: '1 kg',
+    finish: 'Cor sólida',
+    leadTime: '1 a 3 dias úteis',
+    leadLabel: 'Envio',
+    optionLabel: 'Cor',
+    finishes: ['Preto', 'Branco', 'Cinza aço', 'Marfim', 'Laranja'],
+    layers: 0,
+    specs: [
+      ['Material', 'PLA+'],
+      ['Diâmetro', '1,75 mm'],
+      ['Peso líquido', '1 kg'],
+      ['Temperatura de bico', '200 a 225 °C'],
+      ['Envio', '1 a 3 dias úteis'],
+    ],
+  },
+  {
+    slug: 'filamento-petg',
+    name: 'Filamento PETG 1 kg',
+    category: 'filamentos',
+    kind: 'filamento',
+    summary: 'PETG · 1,75 mm · carretel de 1 kg',
+    description:
+      'PETG resistente e com boa aderência entre camadas. Indicado para peças funcionais, suportes e itens que passam por esforço ou calor moderado.',
+    price: 139,
+    size: '1,75 mm · 1 kg',
+    material: 'PETG',
+    weight: '1 kg',
+    finish: 'Cor sólida',
+    leadTime: '1 a 3 dias úteis',
+    leadLabel: 'Envio',
+    optionLabel: 'Cor',
+    finishes: ['Preto', 'Branco', 'Cinza aço', 'Laranja'],
+    layers: 0,
+    specs: [
+      ['Material', 'PETG'],
+      ['Diâmetro', '1,75 mm'],
+      ['Peso líquido', '1 kg'],
+      ['Temperatura de bico', '230 a 250 °C'],
+      ['Envio', '1 a 3 dias úteis'],
+    ],
+  },
+  {
+    slug: 'filamento-tpu-95a',
+    name: 'Filamento TPU 95A',
+    category: 'filamentos',
+    kind: 'filamento',
+    summary: 'TPU flexível · 1,75 mm · 500 g',
+    description:
+      'Filamento flexível para peças que dobram e absorvem impacto: capas, vedações, solas e protetores. Imprima devagar e com extrusão direta para melhor resultado.',
+    price: 149,
+    size: '1,75 mm · 500 g',
+    material: 'TPU 95A',
+    weight: '500 g',
+    finish: 'Cor sólida',
+    leadTime: '1 a 3 dias úteis',
+    leadLabel: 'Envio',
+    optionLabel: 'Cor',
+    finishes: ['Preto', 'Branco', 'Laranja'],
+    layers: 0,
+    specs: [
+      ['Material', 'TPU 95A (flexível)'],
+      ['Diâmetro', '1,75 mm'],
+      ['Peso líquido', '500 g'],
+      ['Temperatura de bico', '210 a 230 °C'],
+      ['Envio', '1 a 3 dias úteis'],
+    ],
+  },
+  {
+    slug: 'resina-standard',
+    name: 'Resina Standard 1 kg',
+    category: 'resinas',
+    kind: 'resina',
+    summary: 'Fotossensível 405 nm · 1 kg',
+    description:
+      'Resina de uso geral para impressoras 8K e 16K: boa cobertura, cura rápida e acabamento limpo. Boa para começar e para peças que vão receber pintura.',
+    price: 169,
+    size: 'Frasco de 1 kg',
+    material: 'Resina fotossensível 405 nm',
+    weight: '1 kg',
+    finish: 'Cor sólida',
+    leadTime: '1 a 3 dias úteis',
+    leadLabel: 'Envio',
+    optionLabel: 'Cor',
+    finishes: ['Cinza', 'Preto', 'Branco', 'Marfim'],
+    layers: 0,
+    note: 'Resina fotossensível: use luvas e proteção e trabalhe em local ventilado.',
+    specs: [
+      ['Tipo', 'Standard'],
+      ['Comprimento de onda', '405 nm'],
+      ['Compatível com', 'Impressoras 8K e 16K'],
+      ['Conteúdo', '1 kg'],
+      ['Envio', '1 a 3 dias úteis'],
+    ],
+  },
+  {
+    slug: 'resina-alta-definicao-16k',
+    name: 'Resina Alta Definição 16K',
+    category: 'resinas',
+    kind: 'resina',
+    summary: 'Detalhe fino · 405 nm · 1 kg',
+    description:
+      'Formulada para detalhe: rostos, texturas e miniaturas. Pensada para impressoras 16K, onde cada pixel conta, e também ótima em 8K. É o tipo de resina que usamos quando a peça precisa de fidelidade máxima.',
+    price: 229,
+    size: 'Frasco de 1 kg',
+    material: 'Resina fotossensível 405 nm',
+    weight: '1 kg',
+    finish: 'Cor sólida',
+    leadTime: '1 a 3 dias úteis',
+    leadLabel: 'Envio',
+    optionLabel: 'Cor',
+    finishes: ['Cinza', 'Marfim'],
+    badge: { label: '16K', tone: 'orange' },
+    layers: 0,
+    note: 'Resina fotossensível: use luvas e proteção e trabalhe em local ventilado.',
+    specs: [
+      ['Tipo', 'Alta definição'],
+      ['Comprimento de onda', '405 nm'],
+      ['Compatível com', 'Impressoras 8K e 16K'],
+      ['Conteúdo', '1 kg'],
+      ['Envio', '1 a 3 dias úteis'],
+    ],
+  },
+  {
+    slug: 'resina-resistente',
+    name: 'Resina Resistente 1 kg',
+    category: 'resinas',
+    kind: 'resina',
+    summary: 'Tenaz · 405 nm · 1 kg',
+    description:
+      'Resina com mais resistência a impacto, para peças que precisam aguentar manuseio: encaixes, dobradiças e props de cosplay que vão para a rua.',
+    price: 199,
+    size: 'Frasco de 1 kg',
+    material: 'Resina fotossensível 405 nm',
+    weight: '1 kg',
+    finish: 'Cor sólida',
+    leadTime: '1 a 3 dias úteis',
+    leadLabel: 'Envio',
+    optionLabel: 'Cor',
+    finishes: ['Cinza', 'Preto'],
+    layers: 0,
+    note: 'Resina fotossensível: use luvas e proteção e trabalhe em local ventilado.',
+    specs: [
+      ['Tipo', 'Resistente'],
+      ['Comprimento de onda', '405 nm'],
+      ['Compatível com', 'Impressoras 8K e 16K'],
+      ['Conteúdo', '1 kg'],
+      ['Envio', '1 a 3 dias úteis'],
+    ],
   },
 ];
 

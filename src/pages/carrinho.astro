@@ -14,6 +14,7 @@ const catalog = products.map((p) => ({
   price: p.price,
   href: url(`/produto/${p.slug}`),
   photo: !!photoOf(p),
+  option: p.optionLabel ?? 'Acabamento',
 }));
 const suggestions = products.slice(0, 3);
 ---
@@ -103,7 +104,7 @@ const suggestions = products.slice(0, 3);
 <script>
   import { read, setQty, remove, clear } from '../scripts/cart';
 
-  type Product = { slug: string; name: string; category: string; summary: string; price: number; href: string; photo: boolean };
+  type Product = { slug: string; name: string; category: string; summary: string; price: number; href: string; photo: boolean; option: string };
   const catalog: Product[] = JSON.parse(document.getElementById('catalog')?.textContent ?? '[]');
   const bySlug = new Map(catalog.map((p) => [p.slug, p]));
 
@@ -141,7 +142,7 @@ const suggestions = products.slice(0, 3);
       info.className = 'item__info';
       const cat = document.createElement('p'); cat.className = 'label'; cat.textContent = p.category;
       const name = document.createElement('a'); name.className = 'item__name display'; name.href = p.href; name.textContent = p.name;
-      const fin = document.createElement('p'); fin.className = 'item__finish'; fin.textContent = `Acabamento: ${it.finish}`;
+      const fin = document.createElement('p'); fin.className = 'item__finish'; fin.textContent = `${p.option}: ${it.finish}`; fin.hidden = it.finish === 'Padrão';
       const unit = document.createElement('p'); unit.className = 'item__unit'; unit.textContent = `${money(p.price)} cada`;
       info.append(cat, name, fin, unit);
 

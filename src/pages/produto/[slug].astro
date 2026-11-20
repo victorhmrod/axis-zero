@@ -3,7 +3,7 @@ import { url } from '../../utils/url';
 import Shell from '../../layouts/Shell.astro';
 import ProductImage from '../../components/ProductImage.astro';
 import ProductCard from '../../components/ProductCard.astro';
-import { products, brl, installment, categoryLabel, photoOf, type Product } from '../../data/products';
+import { products, brl, installment, categoryLabel, photoOf, isSupply, type Product } from '../../data/products';
 
 export function getStaticPaths() {
   return products.map((product) => ({ params: { slug: product.slug }, props: { product } }));
@@ -19,7 +19,10 @@ const related = [
 
 const isPhoto = !!photoOf(p);
 const pix = Math.round(p.price * 0.95);
-const specs: [string, string][] = [
+const supply = isSupply(p);
+const optionLabel = p.optionLabel ?? 'Acabamento';
+const leadLabel = p.leadLabel ?? 'Produção';
+const specs: [string, string][] = p.specs ?? [
   ['Tamanho', p.size],
   ['Material', p.material],
   ['Peso', p.weight],
@@ -52,13 +55,15 @@ const filled = p.edition ? Math.max(1, Math.round((p.edition.made / p.edition.to
               <ProductImage product={p} uid={`pdp-${p.slug}`} sizes="(min-width: 960px) 600px, 92vw" />
             </div>
             <span class="stage__line" aria-hidden="true"></span>
-            <span class="stage__layer label">Camada <b id="layer-now">{p.layers.toLocaleString('pt-BR')}</b> / {p.layers.toLocaleString('pt-BR')}</span>
+            {!supply && <span class="stage__layer label">Camada <b id="layer-now">{p.layers.toLocaleString('pt-BR')}</b> / {p.layers.toLocaleString('pt-BR')}</span>}
           </div>
 
-          <div class="slicer">
-            <label for="slicer" class="label">Veja a peça sendo construída</label>
-            <input id="slicer" type="range" min="0" max="100" value="100" step="1" aria-label="Progresso de impressão da peça" />
-          </div>
+          {!supply && (
+            <div class="slicer">
+              <label for="slicer" class="label">Veja a peça sendo construída</label>
+              <input id="slicer" type="range" min="0" max="100" value="100" step="1" aria-label="Progresso de impressão da peça" />
+            </div>
+          )}
         </div>
 
         <!-- ===== Informações ===== -->
@@ -89,7 +94,7 @@ const filled = p.edition ? Math.max(1, Math.round((p.edition.made / p.edition.to
           <form class="buy" id="buy" onsubmit="return false" data-slug={p.slug} data-reveal style="--d:4">
             {p.finishes && (
               <fieldset class="finish">
-                <legend class="label">Acabamento</legend>
+                <legend class="label">{optionLabel}</legend>
                 <div class="finish__opts">
                   {p.finishes.map((f, i) => (
                     <label class="opt">
@@ -113,9 +118,9 @@ const filled = p.edition ? Math.max(1, Math.round((p.edition.made / p.edition.to
           </form>
 
           <ul class="trust" data-reveal style="--d:5">
-            <li><i aria-hidden="true"></i>Produção: {p.leadTime}</li>
+            <li><i aria-hidden="true"></i>{leadLabel}: {p.leadTime}</li>
             <li><i aria-hidden="true"></i>Envio segurado para todo o Brasil</li>
-            <li><i aria-hidden="true"></i>Embalagem reforçada, pronta para presente</li>
+            <li><i aria-hidden="true"></i>{supply ? 'Embalagem reforçada' : 'Embalagem reforçada, pronta para presente'}</li>
           </ul>
 
           <div class="acc" data-reveal style="--d:6">
@@ -125,13 +130,22 @@ const filled = p.edition ? Math.max(1, Math.round((p.edition.made / p.edition.to
                 {specs.map(([k, v]) => (<div><dt>{k}</dt><dd>{v}</dd></div>))}
               </dl>
             </details>
-            <details>
-              <summary>Como é feita</summary>
-              <p>Modelagem digital, impressão camada por camada, remoção de suportes, lixa progressiva, primer e acabamento. Mostramos o trabalho: se tem marca de lixa, é porque a próxima etapa ainda não chegou.</p>
-            </details>
+            {supply ? (
+              <details>
+                <summary>Compatibilidade</summary>
+                <p>Não tem certeza se serve para a sua impressora? Fale com a gente antes de comprar: contato@axiszero.studio. Se precisar de ajuda para configurar ou escolher, a gente também orienta.</p>
+              </details>
+            ) : (
+              <details>
+                <summary>Como é feita</summary>
+                <p>Modelagem digital, impressão camada por camada, remoção de suportes, lixa progressiva, primer e acabamento. Mostramos o trabalho: se tem marca de lixa, é porque a próxima etapa ainda não chegou.</p>
+              </details>
+            )}
             <details>
               <summary>Envio e cuidados</summary>
-              <p>Enviamos com seguro e código de rastreio. Mantenha longe de sol direto e calor excessivo; para limpar, use pincel macio ou pano seco.</p>
+              <p>{supply
+                ? 'Enviamos com seguro e código de rastreio. Guarde filamentos e resinas longe de sol direto e umidade, no recipiente original.'
+                : 'Enviamos com seguro e código de rastreio. Mantenha longe de sol direto e calor excessivo; para limpar, use pincel macio ou pano seco.'}</p>
             </details>
           </div>
         </div>
