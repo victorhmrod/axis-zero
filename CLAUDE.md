@@ -28,6 +28,7 @@ O deploy é automático: push na `main` dispara `.github/workflows/deploy.yml` (
 - `layers: 0` / categorias de insumo (`impressoras`, `filamentos`, `resinas`) desligam o deslizador de "camadas" e trocam "Acabamento/Produção" por `optionLabel`/`leadLabel` e ficha própria (`specs`).
 - `soon: true` troca "Adicionar à sacola" por formulário "Avise-me" (usado nas resinas Axis, ainda em formulação).
 - Fotos reais ficam em `public/products/<slug>.webp` e são ligadas por `image`. `photoOf()` checa o arquivo em **tempo de build** (`process.cwd()`); sem arquivo, cai na arte provisória `ProductArt.astro` (silhuetas SVG fatiadas por máscara). Preços/fichas/nomes de impressoras, filamentos e resinas são **exemplos** a substituir.
+- Os itens sob o comentário "Vector Toys ... Shopee" (19 peças e acessórios) vêm da loja antiga do dono (shopee.com.br/vectortoys; Vector Toys é o nome antigo da Axis Zero): nomes, fotos e preços são reais. Onde a Shopee mostrava preço "no Pix -5%/-8%", o `price` aqui é o valor cheio (preço Pix ÷ 0,95 ou 0,92). Fotos copiadas para `public/products/`. Há mais ~85 produtos na loja ainda não importados.
 
 **Base path do GitHub Pages.** `astro.config.mjs` usa `base: '/axis-zero'` apenas quando `GITHUB_ACTIONS === 'true'`; localmente é `/`. Por isso **todo link/asset absoluto passa por `url()`** (`src/utils/url.ts`). Não escreva `href="/colecao"` nem `src="/brand/..."` direto. Links `#`, `mailto:` e `http` passam intactos.
 
