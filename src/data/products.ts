@@ -386,7 +386,7 @@ export const products: Product[] = [
     summary: 'PLA+ · 1,75 mm · carretel de 1 kg',
     description:
       'PLA+ de uso geral: fácil de imprimir, bom acabamento e mais resistente que o PLA comum. Vai bem em protótipos, peças decorativas e cosplay.',
-    price: 119,
+    price: 105,
     size: '1,75 mm · 1 kg',
     material: 'PLA+',
     weight: '1 kg',
@@ -412,7 +412,7 @@ export const products: Product[] = [
     summary: 'PETG · 1,75 mm · carretel de 1 kg',
     description:
       'PETG resistente e com boa aderência entre camadas. Indicado para peças funcionais, suportes e itens que passam por esforço ou calor moderado.',
-    price: 139,
+    price: 115,
     size: '1,75 mm · 1 kg',
     material: 'PETG',
     weight: '1 kg',
@@ -438,7 +438,7 @@ export const products: Product[] = [
     summary: 'TPU flexível · 1,75 mm · 500 g',
     description:
       'Filamento flexível para peças que dobram e absorvem impacto: capas, vedações, solas e protetores. Imprima devagar e com extrusão direta para melhor resultado.',
-    price: 149,
+    price: 125,
     size: '1,75 mm · 500 g',
     material: 'TPU 95A',
     weight: '500 g',
@@ -464,7 +464,7 @@ export const products: Product[] = [
     summary: 'Fotossensível 405 nm · 1 kg',
     description:
       'Resina de uso geral para impressoras 8K e 16K: boa cobertura, cura rápida e acabamento limpo. Boa para começar e para peças que vão receber pintura.',
-    price: 169,
+    price: 110,
     size: 'Frasco de 1 kg',
     material: 'Resina fotossensível 405 nm',
     weight: '1 kg',
@@ -491,7 +491,7 @@ export const products: Product[] = [
     summary: 'Detalhe fino · 405 nm · 1 kg',
     description:
       'Formulada para detalhe: rostos, texturas e miniaturas. Pensada para impressoras 16K, onde cada pixel conta, e também ótima em 8K. É o tipo de resina que usamos quando a peça precisa de fidelidade máxima.',
-    price: 229,
+    price: 130,
     size: 'Frasco de 1 kg',
     material: 'Resina fotossensível 405 nm',
     weight: '1 kg',
@@ -519,7 +519,7 @@ export const products: Product[] = [
     summary: 'Tenaz · 405 nm · 1 kg',
     description:
       'Resina com mais resistência a impacto, para peças que precisam aguentar manuseio: encaixes, dobradiças e props de cosplay que vão para a rua.',
-    price: 199,
+    price: 120,
     size: 'Frasco de 1 kg',
     material: 'Resina fotossensível 405 nm',
     weight: '1 kg',
