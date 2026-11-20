@@ -1,0 +1,60 @@
+---
+import { url } from '../utils/url';
+import '../styles/global.css';
+import Loader from '../components/Loader.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = 'Axis Zero · Estúdio Industrial — Colecionáveis exclusivos',
+  description = 'Estátuas, colecionáveis, gadgets e peças de cosplay. Impressos em resina, lixados e pintados à mão. Edições numeradas. Tudo começa na primeira camada.',
+} = Astro.props;
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0e0e0f" />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(url('/brand/selo.webp'), Astro.site ?? Astro.url).href} />
+    <meta property="og:locale" content="pt_BR" />
+    <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
+    <link rel="apple-touch-icon" href={url('/brand/selo-256.png')} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <script is:inline>
+      // Marca "js" antes da primeira pintura. O loader aparece uma vez por sessão.
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('js');
+        var seen = false;
+        try { seen = sessionStorage.getItem('az-loader') === '1'; } catch (e) {}
+        var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (seen || reduce) d.classList.add('is-ready');
+        else d.classList.add('is-loading');
+      })();
+    </script>
+  </head>
+  <body>
+    <Loader />
+    <canvas class="field" aria-hidden="true"></canvas>
+    <div class="cursor" aria-hidden="true">
+      <span class="cursor__ring"><span class="cursor__label"></span></span>
+      <span class="cursor__dot"></span>
+    </div>
+    <a class="sr-only" href="#conteudo">Pular para o conteúdo</a>
+    <slot name="header" />
+    <main id="conteudo">
+      <slot />
+    </main>
+    <slot name="footer" />
+    <script>
+      import '../scripts/motion';
+    </script>
+  </body>
+</html>

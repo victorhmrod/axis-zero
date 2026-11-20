@@ -1,0 +1,56 @@
+---
+/**
+ * Símbolo "O" da Axis Zero: 12 faixas iguais, 2:3, vazado interno 42,5% × 50%.
+ * As 2 últimas faixas são laranja (a "primeira camada").
+ *
+ * animate: monta as faixas (de baixo para cima) quando a página fica pronta.
+ * play:    monta as faixas imediatamente (usado no loader).
+ */
+interface Props {
+  uid?: string;
+  animate?: boolean;
+  play?: boolean;
+  class?: string;
+}
+const { uid = 'o', animate = false, play = false, class: className } = Astro.props;
+const W = 200, H = 300, N = 12, RATIO = 0.5;
+const h = H / (N + (N - 1) * RATIO);
+const gap = h * RATIO;
+const stripes = Array.from({ length: N }, (_, i) => ({ y: i * (h + gap), orange: i >= N - 2, i }));
+---
+<svg class:list={['symbol-o', { 'is-animated': animate, 'is-playing': play }, className]} viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Símbolo Axis Zero">
+  <defs>
+    <clipPath id={`${uid}-clip`}><rect width={W} height={H} rx="76" /></clipPath>
+    <mask id={`${uid}-hole`}>
+      <rect width={W} height={H} fill="#fff" />
+      <rect x={(W - 85) / 2} y={(H - 150) / 2} width="85" height="150" rx="26" fill="#000" />
+    </mask>
+  </defs>
+  <g clip-path={`url(#${uid}-clip)`}>
+    <g mask={`url(#${uid}-hole)`}>
+      {stripes.map((s) => (
+        <rect class="stripe" style={`--i:${N - 1 - s.i}`} y={s.y} width={W} height={h} fill={s.orange ? 'var(--orange)' : 'var(--ivory)'} />
+      ))}
+    </g>
+  </g>
+</svg>
+
+<style is:global>
+  .symbol-o { width: 100%; height: auto; overflow: visible; }
+  .symbol-o .stripe { transform-box: fill-box; transform-origin: center; }
+
+  /* estado inicial (só com JS): faixas recolhidas */
+  .js .symbol-o.is-animated .stripe { transform: scaleX(0); opacity: 0; }
+  .js .symbol-o.is-playing .stripe { transform: scaleX(0); opacity: 0; animation: layer-in .7s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i) * 85ms + 80ms); }
+  .js.is-ready .symbol-o.is-animated .stripe {
+    animation: layer-in .7s cubic-bezier(.2,.8,.2,1) both;
+    animation-delay: calc(var(--i) * 70ms + 200ms);
+  }
+  @keyframes layer-in {
+    from { transform: scaleX(0); opacity: 0; }
+    to   { transform: scaleX(1); opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .js .symbol-o .stripe { transform: none !important; opacity: 1 !important; }
+  }
+</style>

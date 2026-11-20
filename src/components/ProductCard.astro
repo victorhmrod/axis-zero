@@ -1,0 +1,122 @@
+---
+import { url } from '../utils/url';
+import ProductImage from './ProductImage.astro';
+import { brl, installment, categoryLabel, photoOf, type Product } from '../data/products';
+
+interface Props { product: Product }
+const { product: p } = Astro.props;
+const isPhoto = !!photoOf(p);
+const href = url(`/produto/${p.slug}`);
+---
+<article class="card chamfer chamfer--hover" style="--c: 18px;" data-tilt="5">
+  <a class="card__media" href={href} aria-label={`Ver ${p.name}`} data-cursor="Ver">
+    <div class="card__grid" aria-hidden="true"></div>
+    {p.badge && <span class={`badge badge--${p.badge.tone}`}>{p.badge.label}</span>}
+    <div class:list={['card__art', { 'is-photo': isPhoto }]}><ProductImage product={p} uid={`card-${p.slug}`} /></div>
+    {p.edition && (
+      <span class="card__ed label">Nº {String(p.edition.made).padStart(2, '0')} / {p.edition.total}</span>
+    )}
+    <span class="card__quick btn btn--sm" aria-hidden="true">Ver peça</span>
+  </a>
+
+  <div class="card__info">
+    <p class="label">{categoryLabel(p.category)}</p>
+    <h3 class="card__name display"><a href={href}>{p.name}</a></h3>
+    <p class="card__specs">{p.summary}</p>
+    <div class="card__price">
+      <strong>{brl(p.price)}</strong>
+      <span>ou {installment(p.price)}</span>
+    </div>
+  </div>
+</article>
+
+<style>
+  .card { display: flex; flex-direction: column; height: 100%; }
+  /* brilho que segue o cursor */
+  .card::after {
+    content: '';
+    position: absolute; inset: 0; z-index: 3;
+    pointer-events: none;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, .09), transparent 60%);
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .card:hover::after { opacity: 1; }
+  /* linha de impressão cruza a imagem no hover */
+  .card__media::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: 2px;
+    background: var(--orange);
+    box-shadow: 0 0 16px 2px rgba(232, 100, 26, .7);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .card:hover .card__media::after { animation: sweep .9s cubic-bezier(.5, 0, .2, 1); }
+  @keyframes sweep {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-420px); opacity: 0; }
+  }
+  .card__media {
+    position: relative;
+    display: block;
+    aspect-ratio: 1 / 1;
+    background: var(--surface-2);
+    overflow: hidden;
+  }
+  .card__grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 32px 32px;
+    opacity: .3;
+    mask-image: radial-gradient(circle at center, #000 25%, transparent 75%);
+    -webkit-mask-image: radial-gradient(circle at center, #000 25%, transparent 75%);
+  }
+  .card__art {
+    position: absolute;
+    inset: 9% 14% 7%;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1);
+  }
+  .card:hover .card__art { transform: translateY(-6px) scale(1.03); }
+  .card__art.is-photo { inset: 0; }
+  .card:hover .card__art.is-photo { transform: scale(1.06); }
+  .card__media:has(.is-photo) .card__grid { display: none; }
+  .card__media:has(.is-photo) { background: #101011; }
+
+  .badge {
+    position: absolute;
+    top: 14px; left: 14px;
+    z-index: 2;
+    padding: 5px 10px;
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    line-height: 1.2;
+  }
+  .badge--orange { background: var(--orange); color: var(--ink); }
+  .badge--ivory { background: var(--ivory); color: var(--ink); }
+  .badge--steel { background: transparent; color: var(--ivory); box-shadow: inset 0 0 0 1px var(--steel); }
+
+  .card__ed { position: absolute; top: 16px; right: 16px; z-index: 2; color: var(--ivory); }
+
+  .card__quick {
+    position: absolute;
+    left: 14px; right: 14px; bottom: 14px;
+    z-index: 2;
+    transform: translateY(calc(100% + 20px));
+    transition: transform .25s cubic-bezier(.2,.8,.2,1);
+  }
+  .card:hover .card__quick, .card:focus-within .card__quick { transform: translateY(0); }
+  @media (hover: none) { .card__quick { display: none; } }
+
+  .card__info { display: grid; gap: 6px; padding: 20px 22px 24px; }
+  .card__name { font-size: 28px; line-height: 1; margin-top: 2px; }
+  .card__name a:hover { color: var(--orange); }
+  .card__specs { color: var(--steel); font-size: 13.5px; }
+  .card__price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin-top: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .card__price strong { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+  .card__price span { color: var(--steel); font-size: 12.5px; }
+</style>

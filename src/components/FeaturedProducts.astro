@@ -1,0 +1,91 @@
+---
+import { url } from '../utils/url';
+import ProductCard from './ProductCard.astro';
+import { products, categories } from '../data/products';
+
+const filters = [{ slug: 'tudo', label: 'Tudo' }, ...categories];
+const featured = products.slice(0, 6);
+---
+<section class="section feat" id="colecao" aria-labelledby="feat-title">
+  <div class="container">
+    <p class="eyebrow" data-reveal><span class="num">02</span> Coleção</p>
+
+    <div class="feat__head">
+      <h2 id="feat-title" class="display" data-reveal="clip">Peças em <em>destaque</em></h2>
+      <div class="feat__filters" role="group" aria-label="Filtrar por categoria" data-reveal style="--d:2">
+        {filters.map((f, i) => (
+          <button type="button" class="chip" aria-pressed={i === 0 ? 'true' : 'false'} data-filter={f.slug}>{f.label}</button>
+        ))}
+      </div>
+    </div>
+
+    <ul class="feat__grid">
+      {featured.map((p, i) => (
+        <li data-category={p.category} data-reveal style={`--d:${i % 3}`}><ProductCard product={p} /></li>
+      ))}
+    </ul>
+
+    <div class="feat__more">
+      <a class="btn btn--ghost" href={url('/colecao')}>Ver todas as peças ({products.length})</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Filtro de categoria (apenas mockup: mostra/oculta cards já renderizados).
+  const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
+  const items = document.querySelectorAll<HTMLElement>('.feat__grid > li');
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const f = chip.dataset.filter;
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+      items.forEach((li) => {
+        li.hidden = !(f === 'tudo' || li.dataset.category === f);
+      });
+    });
+  });
+</script>
+
+<style>
+  .feat { padding-top: clamp(24px, 3vw, 40px); }
+  .feat__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 28px 0 clamp(28px, 4vw, 48px);
+  }
+  .feat__head h2 { font-size: clamp(40px, 6vw, 80px); }
+  .feat__filters { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .chip {
+    min-height: 40px;
+    padding: 0 16px;
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--ivory);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    transition: background-color .15s, color .15s, border-color .15s;
+  }
+  .chip:hover { border-color: var(--ivory); }
+  .chip[aria-pressed='true'] { background: var(--ivory); color: var(--ink); border-color: var(--ivory); }
+
+  .feat__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .feat__grid > li[hidden] { display: none; }
+  .feat__more { display: flex; justify-content: center; margin-top: 48px; }
+
+  @media (max-width: 1000px) { .feat__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) {
+    .feat__grid { grid-template-columns: 1fr; }
+    .feat__filters { flex-wrap: nowrap; overflow-x: auto; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); width: calc(100% + var(--gutter) * 2); scrollbar-width: none; }
+    .chip { flex: none; }
+  }
+</style>

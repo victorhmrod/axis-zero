@@ -1,0 +1,198 @@
+---
+import { url } from '../utils/url';
+import Shell from '../layouts/Shell.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { products, categories } from '../data/products';
+
+const filters = [
+  { slug: 'tudo', label: 'Tudo' },
+  ...categories.map((c) => ({ slug: c.slug, label: c.label })),
+  { slug: 'limitadas', label: 'Edições limitadas' },
+];
+---
+<Shell title="Coleção · Axis Zero" description="Estátuas, colecionáveis, gadgets e peças de cosplay da Axis Zero. Resina 8K, pintura à mão, edições numeradas.">
+  <section class="page-head">
+    <div class="container">
+      <nav class="crumbs" aria-label="Você está em">
+        <a href={url('/')}>Início</a><span aria-hidden="true">/</span><span aria-current="page">Coleção</span>
+      </nav>
+
+      <p class="eyebrow" data-reveal><span class="num">02</span> Coleção</p>
+
+      <div class="page-head__row">
+        <h1 class="display" data-reveal="clip">Toda a <em>coleção</em></h1>
+        <p class="page-head__text" id="colecao-resumo" data-reveal style="--d:2">
+          Peças impressas em resina, lixadas e pintadas à mão. Edições limitadas saem numeradas.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="list section" aria-label="Produtos">
+    <div class="container">
+      <div class="toolbar" data-reveal>
+        <div class="toolbar__filters" role="group" aria-label="Filtrar por categoria">
+          {filters.map((f) => (
+            <button type="button" class="chip" aria-pressed={f.slug === 'tudo' ? 'true' : 'false'} data-filter={f.slug}>{f.label}</button>
+          ))}
+        </div>
+
+        <div class="toolbar__sort">
+          <p class="label" id="count" aria-live="polite">{products.length} peças</p>
+          <label class="sort">
+            <span class="sr-only">Ordenar por</span>
+            <select id="sort">
+              <option value="relevancia">Ordenar: relevância</option>
+              <option value="menor">Menor preço</option>
+              <option value="maior">Maior preço</option>
+              <option value="nome">Nome (A–Z)</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <ul class="grid" id="grid">
+        {products.map((p, i) => (
+          <li
+            data-category={p.category}
+            data-limited={p.edition ? '1' : '0'}
+            data-price={p.price}
+            data-name={p.name}
+            data-index={i}
+            data-reveal
+            style={`--d:${i % 3}`}
+          >
+            <ProductCard product={p} />
+          </li>
+        ))}
+      </ul>
+
+      <p class="empty" id="empty" hidden>Nenhuma peça nessa categoria por enquanto. Veja a coleção completa.</p>
+    </div>
+  </section>
+</Shell>
+
+<script>
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('.chip')];
+  const items = [...document.querySelectorAll<HTMLElement>('#grid > li')];
+  const sort = document.querySelector<HTMLSelectElement>('#sort')!;
+  const count = document.querySelector<HTMLElement>('#count')!;
+  const empty = document.querySelector<HTMLElement>('#empty')!;
+  const valid = new Set(chips.map((c) => c.dataset.filter));
+
+  const fromUrl = () => {
+    const q = new URLSearchParams(location.search);
+    const f = q.get('categoria') ?? q.get('filtro') ?? 'tudo';
+    return valid.has(f) ? f : 'tudo';
+  };
+
+  const apply = (filter: string, order: string) => {
+    let visible = 0;
+    items.forEach((li) => {
+      const ok =
+        filter === 'tudo' ||
+        (filter === 'limitadas' ? li.dataset.limited === '1' : li.dataset.category === filter);
+      li.hidden = !ok;
+      if (ok) visible++;
+    });
+
+    const key = (li: HTMLElement) => {
+      if (order === 'menor') return Number(li.dataset.price);
+      if (order === 'maior') return -Number(li.dataset.price);
+      return Number(li.dataset.index);
+    };
+    const sorted = [...items].sort((a, b) =>
+      order === 'nome' ? (a.dataset.name ?? '').localeCompare(b.dataset.name ?? '', 'pt-BR') : key(a) - key(b),
+    );
+    sorted.forEach((li, i) => { li.style.order = String(i); });
+
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.filter === filter)));
+    count.textContent = `${visible} ${visible === 1 ? 'peça' : 'peças'}`;
+    empty.hidden = visible > 0;
+  };
+
+  let current = fromUrl();
+  apply(current, sort.value);
+
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      current = chip.dataset.filter ?? 'tudo';
+      const url = new URL(location.href);
+      url.search = '';
+      if (current === 'limitadas') url.searchParams.set('filtro', 'limitadas');
+      else if (current !== 'tudo') url.searchParams.set('categoria', current);
+      history.replaceState(null, '', url);
+      apply(current, sort.value);
+    });
+  });
+  sort.addEventListener('change', () => apply(current, sort.value));
+</script>
+
+<style>
+  .page-head { padding-block: clamp(28px, 4vw, 56px) 0; }
+  .crumbs {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-bottom: 28px;
+    font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .16em;
+    color: var(--steel);
+  }
+  .crumbs a:hover { color: var(--orange); }
+  .crumbs [aria-current] { color: var(--ivory); }
+
+  .page-head__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
+    gap: 24px 64px;
+    align-items: end;
+    margin-top: 28px;
+  }
+  .page-head h1 { font-size: clamp(48px, 8vw, 112px); }
+  .page-head__text { color: var(--steel); max-width: 44ch; }
+
+  .list { padding-top: clamp(32px, 4vw, 56px); }
+  .toolbar {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 16px 24px;
+    padding-block: 20px;
+    margin-bottom: 32px;
+    border-block: 1px solid var(--line);
+  }
+  .toolbar__filters { display: flex; flex-wrap: wrap; gap: 8px; }
+  .toolbar__sort { display: flex; align-items: center; gap: 20px; }
+
+  .chip {
+    min-height: 40px; padding: 0 16px;
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--ivory);
+    font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .14em;
+    transition: background-color .15s, color .15s, border-color .15s;
+  }
+  .chip:hover { border-color: var(--ivory); }
+  .chip[aria-pressed='true'] { background: var(--ivory); color: var(--ink); border-color: var(--ivory); }
+
+  .sort select {
+    height: 40px;
+    padding: 0 36px 0 14px;
+    background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f2ebdd' stroke-width='2.5' stroke-linecap='square'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center / 16px;
+    border: 1px solid var(--line-strong);
+    color: var(--ivory);
+    font: inherit; font-size: 13px; font-weight: 500;
+    appearance: none;
+    cursor: pointer;
+  }
+  .sort select:focus-visible { outline-offset: 0; border-color: var(--orange); }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .grid > li[hidden] { display: none; }
+  .empty { padding: 64px 0; text-align: center; color: var(--steel); }
+
+  @media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 760px) { .page-head__row { grid-template-columns: 1fr; } }
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+    .toolbar__filters { flex-wrap: nowrap; overflow-x: auto; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); width: calc(100% + var(--gutter) * 2); scrollbar-width: none; }
+    .chip { flex: none; }
+    .toolbar__sort { width: 100%; justify-content: space-between; }
+  }
+</style>

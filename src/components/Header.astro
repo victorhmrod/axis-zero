@@ -1,0 +1,205 @@
+---
+import { url } from '../utils/url';
+const nav = [
+  { label: 'Estátuas', href: '/colecao?categoria=estatuas' },
+  { label: 'Colecionáveis', href: '/colecao?categoria=colecionaveis' },
+  { label: 'Gadgets', href: '/colecao?categoria=gadgets' },
+  { label: 'Cosplay', href: '/colecao?categoria=cosplay' },
+  { label: 'Edições limitadas', href: '/colecao?filtro=limitadas' },
+];
+const path = Astro.url.pathname;
+---
+<div class="announce">
+  <div class="container announce__in">
+    <span><strong>Drop 03</strong> · Sentinela Nº 01 — 50 unidades numeradas</span>
+    <span class="announce__sep" aria-hidden="true"></span>
+    <span class="announce__hide">Frete segurado para todo o Brasil</span>
+  </div>
+</div>
+
+<header class="header">
+  <div class="progress" aria-hidden="true"></div>
+  <div class="container header__in">
+    <a class="header__logo" href={url('/')} aria-label="Axis Zero · Estúdio Industrial — página inicial">
+      <img src={url('/brand/logo-horizontal-marfim.webp')} width="1695" height="1034" alt="Axis Zero · Estúdio Industrial" />
+    </a>
+
+    <nav class="header__nav" aria-label="Principal">
+      <ul>
+        {nav.map((n) => <li><a href={url(n.href)}>{n.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="header__tools">
+      <button class="icon-btn" aria-label="Buscar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5 21 21" /></svg>
+      </button>
+      <button class="icon-btn icon-btn--hide" aria-label="Minha conta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><circle cx="12" cy="8" r="4" /><path d="M4 21v-2a5 5 0 0 1 5-5h6a5 5 0 0 1 5 5v2" /></svg>
+      </button>
+      <button class="icon-btn cart" aria-label="Sacola, 0 itens" data-cart>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M5 8h14l-1 12H6L5 8Z" /><path d="M9 8V6a3 3 0 0 1 6 0v2" /></svg>
+        <span class="cart__n" data-cart-n>0</span>
+      </button>
+
+      <details class="menu">
+        <summary class="icon-btn" aria-label="Abrir menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M3 6h18M3 12h18M3 18h18" /></svg>
+        </summary>
+        <nav class="menu__panel" aria-label="Menu móvel">
+          <ul>
+            {nav.map((n) => <li><a href={url(n.href)}>{n.label}</a></li>)}
+            <li><a href={url('/#encomendas')} class="menu__cta">Encomendas</a></li>
+          </ul>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Sacola de mentira: guarda só a quantidade no navegador e atualiza o selo.
+  const KEY = 'az-cart';
+  const read = () => {
+    try { return Math.max(0, Number(localStorage.getItem(KEY)) || 0); } catch { return 0; }
+  };
+  const render = () => {
+    const n = read();
+    document.querySelectorAll<HTMLElement>('[data-cart-n]').forEach((el) => { el.textContent = String(n); });
+    document.querySelectorAll<HTMLElement>('[data-cart]').forEach((el) => el.setAttribute('aria-label', `Sacola, ${n} ${n === 1 ? 'item' : 'itens'}`));
+  };
+  window.addEventListener('az:cart-add', (e) => {
+    const qty = (e as CustomEvent<number>).detail || 1;
+    try { localStorage.setItem(KEY, String(read() + qty)); } catch {}
+    render();
+  });
+  render();
+</script>
+
+<style>
+  .announce {
+    background: var(--orange);
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+  .announce__in {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    min-height: 36px;
+    text-align: center;
+  }
+  .announce__sep { width: 1px; height: 14px; background: var(--ink); opacity: .4; }
+  @media (max-width: 720px) {
+    .announce__hide, .announce__sep { display: none; }
+    .announce { letter-spacing: 0.08em; font-size: 11px; }
+  }
+
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(14, 14, 15, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .header__in {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 76px;
+    transition: height .35s cubic-bezier(.2,.8,.2,1);
+  }
+  .header.is-scrolled .header__in { height: 62px; }
+  .header.is-scrolled { background: rgba(14, 14, 15, 0.96); }
+  .header__logo { flex: none; display: block; }
+  .header__logo img { height: 48px; width: auto; transition: height .35s cubic-bezier(.2,.8,.2,1); }
+  .header.is-scrolled .header__logo img { height: 40px; }
+
+  .header__nav { flex: 1; }
+  .header__nav ul { display: flex; justify-content: center; gap: clamp(16px, 2.4vw, 36px); }
+  .header__nav a {
+    position: relative;
+    display: block;
+    padding: 8px 0;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ivory);
+    transition: color .15s;
+  }
+  .header__nav a::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 2px;
+    background: var(--orange);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .2s ease;
+  }
+  .header__nav a:hover { color: #fff; }
+  .header__nav a:hover::after { transform: scaleX(1); }
+
+  .header__tools { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+  .icon-btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 44px; height: 44px;
+    background: none;
+    border: 0;
+    color: var(--ivory);
+    list-style: none;
+    transition: color .15s;
+  }
+  .icon-btn::-webkit-details-marker { display: none; }
+  .icon-btn:hover { color: var(--orange); }
+  .icon-btn svg { width: 22px; height: 22px; }
+
+  .cart__n {
+    position: absolute;
+    top: 4px; right: 2px;
+    min-width: 18px; height: 18px;
+    padding: 0 4px;
+    display: grid; place-items: center;
+    background: var(--orange);
+    color: var(--ink);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .menu { display: none; }
+  .menu__panel {
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: var(--ink);
+    border-bottom: 1px solid var(--line);
+    padding: 12px var(--gutter) 28px;
+  }
+  .menu__panel a {
+    display: block;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-display);
+    font-size: 28px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .menu__panel .menu__cta { color: var(--orange); border-bottom: 0; }
+
+  @media (max-width: 960px) {
+    .header__nav { display: none; }
+    .menu { display: block; }
+    .icon-btn--hide { display: none; }
+    .header__in { height: 68px; }
+    .header__logo img { height: 42px; }
+  }
+</style>

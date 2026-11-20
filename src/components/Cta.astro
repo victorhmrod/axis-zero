@@ -1,0 +1,37 @@
+---
+import { url } from '../utils/url';
+---
+<section class="cta" id="encomendas" aria-labelledby="cta-title">
+  <div class="container cta__in">
+    <img src={url('/brand/logo-mono-preto.webp')} width="1695" height="1034" alt="Axis Zero · Estúdio Industrial" class="cta__logo" data-reveal="scale" />
+
+    <h2 id="cta-title" class="display" data-reveal="clip" style="--d:1">Tudo começa na primeira camada.</h2>
+    <p data-reveal style="--d:2">Réplicas, props e projetos autorais sob medida. Conte a ideia — a gente fatia, imprime e pinta.</p>
+
+    <a class="btn btn--dark" href="mailto:contato@axiszero.studio" data-reveal style="--d:3">Encomendas</a>
+  </div>
+
+  <div class="cta__layers" aria-hidden="true" data-reveal><i style="--k:3"></i><i style="--k:2"></i><i style="--k:1"></i><i style="--k:0"></i></div>
+</section>
+
+<style>
+  .cta {
+    background: var(--orange);
+    color: var(--ink);
+    padding-top: clamp(72px, 10vw, 140px);
+  }
+  .cta__in {
+    display: grid;
+    justify-items: center;
+    gap: 28px;
+    text-align: center;
+    padding-bottom: clamp(72px, 10vw, 140px);
+  }
+  .cta__logo { width: clamp(150px, 20vw, 220px); height: auto; margin-bottom: 20px; }
+  .cta h2 { font-size: clamp(36px, 6vw, 72px); max-width: 16ch; line-height: 1; }
+  .cta p { max-width: 46ch; font-weight: 500; }
+  .cta__layers { display: grid; gap: 6px; }
+  .cta__layers i { display: block; height: 6px; background: var(--ink); transform-origin: left; transition: transform 1s cubic-bezier(.2,.8,.2,1) calc(var(--k) * 110ms + 200ms); }
+  :global(.js) .cta__layers { opacity: 1; transform: none; }
+  :global(.js) .cta__layers:not(.in) i { transform: scaleX(0); }
+</style>

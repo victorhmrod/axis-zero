@@ -1,0 +1,374 @@
+---
+import { url } from '../../utils/url';
+import Shell from '../../layouts/Shell.astro';
+import ProductImage from '../../components/ProductImage.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { products, brl, installment, categoryLabel, photoOf, type Product } from '../../data/products';
+
+export function getStaticPaths() {
+  return products.map((product) => ({ params: { slug: product.slug }, props: { product } }));
+}
+
+interface Props { product: Product }
+const { product: p } = Astro.props;
+
+const related = [
+  ...products.filter((x) => x.slug !== p.slug && x.category === p.category),
+  ...products.filter((x) => x.slug !== p.slug && x.category !== p.category),
+].slice(0, 3);
+
+const isPhoto = !!photoOf(p);
+const pix = Math.round(p.price * 0.95);
+const specs: [string, string][] = [
+  ['Tamanho', p.size],
+  ['Material', p.material],
+  ['Peso', p.weight],
+  ['Acabamento', p.finish],
+  ['Camadas', `${p.layers.toLocaleString('pt-BR')} (50 µm)`],
+  ['Produção', p.leadTime],
+];
+const EDITION_LAYERS = 12;
+const filled = p.edition ? Math.max(1, Math.round((p.edition.made / p.edition.total) * EDITION_LAYERS)) : 0;
+---
+<Shell title={`${p.name} · Axis Zero`} description={`${p.name} — ${p.summary}. ${p.description}`}>
+  <section class="pdp">
+    <div class="container">
+      <nav class="crumbs" aria-label="Você está em">
+        <a href={url('/')}>Início</a><span aria-hidden="true">/</span>
+        <a href={url('/colecao')}>Coleção</a><span aria-hidden="true">/</span>
+        <a href={url(`/colecao?categoria=${p.category}`)}>{categoryLabel(p.category)}</a>
+      </nav>
+
+      <div class="pdp__grid">
+        <!-- ===== Galeria ===== -->
+        <div class="pdp__media" data-reveal="left">
+          <div class:list={['stage chamfer', { 'stage--photo': isPhoto }]} style="--c: 28px;" data-layers={p.layers} data-tilt="3">
+            <div class="stage__grid" aria-hidden="true"></div>
+            {p.badge && <span class={`badge badge--${p.badge.tone}`}>{p.badge.label}</span>}
+            {p.edition && (
+              <span class="stage__ed label">Nº {String(p.edition.made + 1).padStart(2, '0')} / {p.edition.total}</span>
+            )}
+            <div class="stage__art" role="img" aria-label={`${p.name}, ilustração provisória`}>
+              <ProductImage product={p} uid={`pdp-${p.slug}`} sizes="(min-width: 960px) 600px, 92vw" />
+            </div>
+            <span class="stage__line" aria-hidden="true"></span>
+            <span class="stage__layer label">Camada <b id="layer-now">{p.layers.toLocaleString('pt-BR')}</b> / {p.layers.toLocaleString('pt-BR')}</span>
+          </div>
+
+          <div class="slicer">
+            <label for="slicer" class="label">Veja a peça sendo construída</label>
+            <input id="slicer" type="range" min="0" max="100" value="100" step="1" aria-label="Progresso de impressão da peça" />
+          </div>
+        </div>
+
+        <!-- ===== Informações ===== -->
+        <div class="pdp__info">
+          <p class="label" data-reveal>{categoryLabel(p.category)} · {p.material}</p>
+          <h1 class="display" data-reveal="clip" style="--d:1">{p.name}</h1>
+
+          <div class="price" data-reveal style="--d:2">
+            <strong>{brl(p.price)}</strong>
+            <span>ou {installment(p.price)} sem juros</span>
+            <span class="price__pix">{brl(pix)} no Pix</span>
+          </div>
+
+          {p.edition && (
+            <div class="stock">
+              <div class="stock__bar" role="img" aria-label={`${p.edition.made} de ${p.edition.total} unidades reservadas`}>
+                {Array.from({ length: EDITION_LAYERS }, (_, i) => (
+                  <i class:list={[{ on: i >= EDITION_LAYERS - filled, o: i >= EDITION_LAYERS - 2 && i >= EDITION_LAYERS - filled }]}></i>
+                ))}
+              </div>
+              <p class="label">Edição numerada · <strong>{p.edition.total - p.edition.made}</strong> de {p.edition.total} restantes</p>
+            </div>
+          )}
+
+          <p class="desc" data-reveal style="--d:3">{p.description}</p>
+          {p.note && <p class="note label">{p.note}</p>}
+
+          <form class="buy" id="buy" onsubmit="return false" data-reveal style="--d:4">
+            {p.finishes && (
+              <fieldset class="finish">
+                <legend class="label">Acabamento</legend>
+                <div class="finish__opts">
+                  {p.finishes.map((f, i) => (
+                    <label class="opt">
+                      <input type="radio" name="acabamento" value={f} checked={i === 0} />
+                      <span>{f}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            )}
+
+            <div class="buy__row">
+              <div class="qty" role="group" aria-label="Quantidade">
+                <button type="button" data-qty="-1" aria-label="Diminuir quantidade">−</button>
+                <output id="qty" aria-live="polite">1</output>
+                <button type="button" data-qty="1" aria-label="Aumentar quantidade">+</button>
+              </div>
+              <button type="submit" class="btn buy__add" id="add">Adicionar à sacola</button>
+            </div>
+            <p class="buy__ok" id="added" role="status" hidden>Adicionado à sacola.</p>
+          </form>
+
+          <ul class="trust" data-reveal style="--d:5">
+            <li><i aria-hidden="true"></i>Produção: {p.leadTime}</li>
+            <li><i aria-hidden="true"></i>Envio segurado para todo o Brasil</li>
+            <li><i aria-hidden="true"></i>Embalagem reforçada, pronta para presente</li>
+          </ul>
+
+          <div class="acc" data-reveal style="--d:6">
+            <details open>
+              <summary>Ficha técnica</summary>
+              <dl class="specs">
+                {specs.map(([k, v]) => (<div><dt>{k}</dt><dd>{v}</dd></div>))}
+              </dl>
+            </details>
+            <details>
+              <summary>Como é feita</summary>
+              <p>Modelagem digital, impressão camada por camada, remoção de suportes, lixa progressiva, primer e acabamento. Mostramos o trabalho: se tem marca de lixa, é porque a próxima etapa ainda não chegou.</p>
+            </details>
+            <details>
+              <summary>Envio e cuidados</summary>
+              <p>Enviamos com seguro e código de rastreio. Mantenha longe de sol direto e calor excessivo; para limpar, use pincel macio ou pano seco.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section related" aria-labelledby="rel-title">
+    <div class="container">
+      <p class="eyebrow" data-reveal><span class="num">05</span> Continue olhando</p>
+      <div class="section-head" style="margin-top: 28px;">
+        <h2 id="rel-title" class="display" data-reveal="clip">Você também pode <em>gostar</em></h2>
+      </div>
+      <ul class="related__grid">
+        {related.map((r, i) => <li data-reveal style={`--d:${i}`}><ProductCard product={r} /></li>)}
+      </ul>
+    </div>
+  </section>
+</Shell>
+
+<script>
+  const stage = document.querySelector<HTMLElement>('.stage');
+  const slicer = document.querySelector<HTMLInputElement>('#slicer');
+  const now = document.querySelector<HTMLElement>('#layer-now');
+
+  if (stage && slicer && now) {
+    const total = Number(stage.dataset.layers) || 1;
+    const set = (pct: number) => {
+      stage.style.setProperty('--p', String(pct));
+      slicer.value = String(Math.round(pct));
+      now.textContent = Math.max(1, Math.round((pct / 100) * total)).toLocaleString('pt-BR');
+    };
+
+    let raf = 0;
+    slicer.addEventListener('input', () => { cancelAnimationFrame(raf); set(Number(slicer.value)); });
+
+    // Entrada: a peça "imprime" uma vez (respeita prefers-reduced-motion).
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const dur = 2200;
+      let t0 = performance.now();
+      const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+      const step = (t: number) => {
+        const k = Math.min(1, (t - t0) / dur);
+        set(ease(k) * 100);
+        if (k < 1) raf = requestAnimationFrame(step);
+      };
+      const start = () => { raf = requestAnimationFrame((t) => { t0 = t; step(t); }); };
+      set(0);
+      // espera o loader terminar (primeira visita da sessão)
+      if (document.documentElement.classList.contains('is-ready')) start();
+      else window.addEventListener('az:ready', start, { once: true });
+    }
+  }
+
+  // Quantidade e sacola (mockup)
+  const qtyEl = document.querySelector<HTMLOutputElement>('#qty');
+  let qty = 1;
+  document.querySelectorAll<HTMLButtonElement>('[data-qty]').forEach((b) =>
+    b.addEventListener('click', () => {
+      qty = Math.min(5, Math.max(1, qty + Number(b.dataset.qty)));
+      if (qtyEl) qtyEl.textContent = String(qty);
+    }),
+  );
+
+  const add = document.querySelector<HTMLButtonElement>('#add');
+  const ok = document.querySelector<HTMLElement>('#added');
+  let timer = 0;
+  add?.addEventListener('click', () => {
+    window.dispatchEvent(new CustomEvent('az:cart-add', { detail: qty }));
+    if (ok) ok.hidden = false;
+    add.textContent = 'Adicionado ✓';
+    clearTimeout(timer);
+    timer = window.setTimeout(() => { add.textContent = 'Adicionar à sacola'; if (ok) ok.hidden = true; }, 2200);
+  });
+</script>
+
+<style>
+  .pdp { padding-block: clamp(28px, 4vw, 56px) clamp(24px, 4vw, 56px); }
+  .crumbs {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-bottom: 32px;
+    font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .16em;
+    color: var(--steel);
+  }
+  .crumbs a:hover { color: var(--orange); }
+
+  .pdp__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+    gap: clamp(32px, 5vw, 80px);
+    align-items: start;
+  }
+  .pdp__media { position: sticky; top: 100px; display: grid; gap: 20px; }
+
+  /* ----- Stage ----- */
+  .stage {
+    --p: 100;
+    --bg: var(--surface-2);
+    aspect-ratio: 1 / 1;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+  .stage__grid {
+    position: absolute; inset: 0; z-index: -1;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: .35;
+    mask-image: radial-gradient(circle at center, #000 25%, transparent 78%);
+    -webkit-mask-image: radial-gradient(circle at center, #000 25%, transparent 78%);
+  }
+  .stage__art {
+    width: 68%; height: 80%;
+    clip-path: inset(calc(100% - var(--p) * 1%) 0 0 0);
+  }
+  /* foto real: ocupa o quadro inteiro; a linha de impressão acompanha */
+  .stage--photo { --bg: #101011; }
+  .stage--photo .stage__grid { display: none; }
+  .stage--photo .stage__art { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .stage--photo .stage__layer, .stage--photo .stage__ed { background: rgba(14, 14, 15, .82); padding: 5px 10px; z-index: 2; }
+  .stage--photo .stage__line { left: 0; right: 0; top: calc(100% * (1 - var(--p) / 100)); }
+  /* linha de impressão: acompanha a camada atual */
+  .stage__line {
+    position: absolute;
+    left: 15%; right: 15%;
+    top: calc(10% + 80% * (1 - var(--p) / 100));
+    height: 2px;
+    background: var(--orange);
+    box-shadow: 0 0 0 1px rgba(232,100,26,.25);
+    opacity: calc(1 - (var(--p) / 100) * (var(--p) / 100) * (var(--p) / 100) * (var(--p) / 100));
+    pointer-events: none;
+  }
+  .stage__layer { position: absolute; bottom: 20px; right: 40px; color: var(--orange); }
+  .stage__layer b { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .stage__ed { position: absolute; top: 20px; right: 40px; color: var(--ivory); }
+  .badge {
+    position: absolute; top: 18px; left: 40px; z-index: 2;
+    padding: 5px 10px;
+    font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .16em; line-height: 1.2;
+  }
+  .badge--orange { background: var(--orange); color: var(--ink); }
+  .badge--ivory { background: var(--ivory); color: var(--ink); }
+  .badge--steel { color: var(--ivory); box-shadow: inset 0 0 0 1px var(--steel); }
+
+  .slicer { display: grid; gap: 10px; }
+  .slicer input[type='range'] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 24px; background: transparent; cursor: pointer;
+  }
+  .slicer input[type='range']::-webkit-slider-runnable-track { height: 4px; background: var(--line-strong); }
+  .slicer input[type='range']::-moz-range-track { height: 4px; background: var(--line-strong); }
+  .slicer input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 14px; height: 24px; margin-top: -10px;
+    background: var(--orange); border: 0; border-radius: 0;
+  }
+  .slicer input[type='range']::-moz-range-thumb { width: 14px; height: 24px; background: var(--orange); border: 0; border-radius: 0; }
+
+  /* ----- Info ----- */
+  .pdp__info { display: grid; gap: 22px; }
+  .pdp__info h1 { font-size: clamp(44px, 6vw, 84px); }
+
+  .price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; padding-block: 18px; border-block: 1px solid var(--line); }
+  .price strong { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+  .price span { color: var(--steel); font-size: 14px; }
+  .price .price__pix { color: var(--ivory); }
+
+  .stock { display: grid; gap: 10px; }
+  .stock__bar { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; }
+  .stock__bar i { height: 10px; background: var(--line); }
+  .stock__bar i.on { background: var(--ivory); }
+  .stock__bar i.o { background: var(--orange); }
+  .stock .label strong { color: var(--ivory); }
+
+  .desc { color: #cfc8ba; max-width: 56ch; }
+  .note { max-width: 56ch; line-height: 1.6; letter-spacing: .08em; }
+
+  .buy { display: grid; gap: 20px; }
+  .finish { border: 0; margin: 0; padding: 0; display: grid; gap: 10px; min-width: 0; }
+  .finish legend { padding: 0; margin-bottom: 10px; }
+  .finish__opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .opt { position: relative; cursor: pointer; }
+  .opt input { position: absolute; opacity: 0; inset: 0; }
+  .opt span {
+    display: block; padding: 10px 16px;
+    border: 1px solid var(--line-strong);
+    font-size: 13px; font-weight: 500;
+    transition: border-color .15s, background-color .15s, color .15s;
+  }
+  .opt:hover span { border-color: var(--ivory); }
+  .opt input:checked + span { background: var(--ivory); color: var(--ink); border-color: var(--ivory); font-weight: 600; }
+  .opt input:focus-visible + span { outline: 2px solid var(--orange); outline-offset: 3px; }
+
+  .buy__row { display: flex; gap: 12px; }
+  .qty { display: inline-flex; align-items: center; border: 1px solid var(--line-strong); height: 48px; }
+  .qty button { width: 44px; height: 100%; background: none; border: 0; font-size: 20px; line-height: 1; }
+  .qty button:hover { color: var(--orange); }
+  .qty output { min-width: 32px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .buy__add { flex: 1; }
+  .buy__ok { font-size: 13px; color: var(--orange); font-weight: 600; letter-spacing: .04em; }
+
+  .trust { display: grid; gap: 10px; font-size: 14px; color: #cfc8ba; }
+  .trust li { display: flex; align-items: center; gap: 12px; }
+  .trust i { flex: none; width: 8px; height: 8px; background: var(--orange); }
+
+  .acc { border-top: 1px solid var(--line); }
+  .acc details { border-bottom: 1px solid var(--line); }
+  .acc summary {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 0; cursor: pointer; list-style: none;
+    font-family: var(--font-display); font-size: 22px; text-transform: uppercase; letter-spacing: .02em;
+  }
+  .acc summary::-webkit-details-marker { display: none; }
+  .acc summary::after { content: '+'; font-family: var(--font-body); font-size: 22px; color: var(--orange); }
+  .acc details[open] summary::after { content: '−'; }
+  .acc details > p { padding-bottom: 20px; color: var(--steel); font-size: 14.5px; }
+  .specs { display: grid; margin: 0 0 12px; }
+  .specs > div { display: flex; justify-content: space-between; gap: 24px; padding: 10px 0; border-top: 1px solid var(--line); font-size: 14px; }
+  .specs dt { color: var(--steel); }
+  .specs dd { margin: 0; text-align: right; font-weight: 500; }
+
+  .related { padding-top: clamp(48px, 6vw, 80px); }
+  .related__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+  @media (max-width: 960px) {
+    .pdp__grid { grid-template-columns: 1fr; }
+    .pdp__media { position: static; }
+    .related__grid { grid-template-columns: repeat(2, 1fr); }
+    .related__grid li:nth-child(3) { display: none; }
+  }
+  @media (max-width: 600px) {
+    .related__grid { grid-template-columns: 1fr; }
+    .related__grid li:nth-child(3) { display: block; }
+    .stage__layer, .stage__ed { right: 28px; }
+    .badge { left: 28px; }
+    .buy__row { flex-wrap: wrap; }
+    .buy__add { flex: 1 1 100%; }
+  }
+</style>

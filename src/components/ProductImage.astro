@@ -1,0 +1,20 @@
+---
+import { url } from '../utils/url';
+import ProductArt from './ProductArt.astro';
+import { photoOf, type Product } from '../data/products';
+
+interface Props {
+  product: Product;
+  uid: string;
+  sizes?: string;
+}
+const { product: p, uid, sizes = '(min-width: 1000px) 400px, 90vw' } = Astro.props;
+const photo = photoOf(p);
+---
+{photo
+  ? <img class="photo" src={url(photo)} alt={`${p.name}: ${p.summary}`} loading="lazy" decoding="async" sizes={sizes} />
+  : <ProductArt kind={p.kind} uid={uid} />}
+
+<style>
+  .photo { width: 100%; height: 100%; object-fit: cover; }
+</style>

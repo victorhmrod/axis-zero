@@ -1,0 +1,163 @@
+---
+import { url } from '../utils/url';
+import ProductArt from './ProductArt.astro';
+import { brl, installment, products, categoryLabel } from '../data/products';
+
+const p = products[0];
+const total = p.edition!.total;
+const sold = p.edition!.made;
+const left = total - sold;
+const LAYERS = 12;
+const filled = Math.round((sold / total) * LAYERS);
+---
+<section class="section section--ivory drop" id="drop" aria-labelledby="drop-title">
+  <div class="container">
+    <p class="eyebrow" data-reveal><span class="num">03</span> Edição limitada</p>
+
+    <div class="drop__grid">
+      <div class="drop__stage chamfer" style="--c: 28px; --bg: var(--ink); --bc: var(--ink);" data-reveal="left" data-tilt="3" data-cursor="Reservar">
+        <span class="drop__tag">Drop 03</span>
+        <div class="drop__art"><ProductArt kind="estatua" uid="drop" /></div>
+        <span class="drop__serial label">Nº {String(sold + 1).padStart(2, '0')} / {total}</span>
+      </div>
+
+      <div class="drop__info">
+        <p class="label" data-reveal style="--d:1">{categoryLabel(p.category)} · {p.summary}</p>
+        <h2 id="drop-title" class="display" data-reveal="clip" style="--d:2">Sentinela <em>Nº 01</em></h2>
+        <p class="drop__text" data-reveal style="--d:3">
+          Guardiã de 32 cm esculpida em resina 8K, com lança removível e base numerada.
+          Lixada, primada e pintada à mão. A primeira camada de cada peça vai na cor da casa.
+        </p>
+
+        <div class="drop__count" data-target="2026-11-28T20:00:00-03:00" aria-live="off" data-reveal style="--d:4">
+          <p class="label">Abertura do drop</p>
+          <div class="drop__clock">
+            <div><b data-u="d">08</b><span>dias</span></div>
+            <div><b data-u="h">00</b><span>horas</span></div>
+            <div><b data-u="m">00</b><span>min</span></div>
+            <div><b data-u="s">00</b><span>seg</span></div>
+          </div>
+        </div>
+
+        <div class="drop__stock" data-reveal style="--d:5">
+          <div class="drop__bar" role="img" aria-label={`${sold} de ${total} unidades reservadas`}>
+            {Array.from({ length: LAYERS }, (_, i) => (
+              <i class:list={[{ on: i >= LAYERS - filled, o: i >= LAYERS - 2 && i >= LAYERS - filled }]} style={`--k:${LAYERS - 1 - i}`}></i>
+            ))}
+          </div>
+          <p class="label"><strong>{left}</strong> de {total} restantes</p>
+        </div>
+
+        <div class="drop__buy" data-reveal style="--d:6">
+          <div class="drop__price">
+            <strong>{brl(p.price)}</strong>
+            <span>ou {installment(p.price, 10)}</span>
+          </div>
+          <a class="btn btn--dark" href={url(`/produto/${p.slug}`)}>Reservar a minha</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const el = document.querySelector<HTMLElement>('.drop__count');
+  if (el) {
+    const target = new Date(el.dataset.target ?? '').getTime();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const set = (u: string, v: number) => {
+      const node = el.querySelector<HTMLElement>(`[data-u="${u}"]`);
+      if (!node) return;
+      const next = pad(v);
+      if (node.textContent === next) return;
+      node.textContent = next;
+      node.classList.remove('flip');
+      void node.offsetWidth; // reinicia a animação
+      node.classList.add('flip');
+    };
+    const tick = () => {
+      const diff = Math.max(0, target - Date.now());
+      set('d', Math.floor(diff / 864e5));
+      set('h', Math.floor(diff / 36e5) % 24);
+      set('m', Math.floor(diff / 6e4) % 60);
+      set('s', Math.floor(diff / 1e3) % 60);
+    };
+    if (!Number.isNaN(target)) { tick(); setInterval(tick, 1000); }
+  }
+</script>
+
+<style>
+  .drop__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(32px, 6vw, 96px);
+    align-items: center;
+    margin-top: clamp(32px, 4vw, 56px);
+  }
+  .drop__stage {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    display: grid;
+    place-items: center;
+  }
+  .drop__art { width: 66%; height: 82%; }
+  .drop__tag {
+    position: absolute; top: 24px; left: 40px;
+    background: var(--orange); color: var(--ink);
+    padding: 5px 12px;
+    font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+  }
+  .drop__serial { position: absolute; bottom: 22px; right: 40px; color: var(--ivory); }
+
+  .drop__info { display: grid; gap: 24px; }
+  .drop__info h2 { font-size: clamp(44px, 6vw, 88px); }
+  .drop__info h2 em { display: block; white-space: nowrap; }
+  .drop__text { max-width: 48ch; color: var(--ivory-muted); font-size: 17px; }
+
+  .drop__count { display: grid; gap: 10px; }
+  .drop__clock { display: flex; gap: 0; }
+  .drop__clock > div {
+    display: grid; gap: 2px;
+    padding-right: clamp(14px, 2.2vw, 28px);
+    margin-right: clamp(14px, 2.2vw, 28px);
+    border-right: 1px solid rgba(14,14,15,.2);
+  }
+  .drop__clock > div:last-child { border-right: 0; margin-right: 0; padding-right: 0; }
+  .drop__clock b {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(36px, 4.4vw, 56px);
+    line-height: 1;
+    letter-spacing: .02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .drop__clock span { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .16em; color: var(--ivory-muted); }
+
+  .drop__stock { display: grid; gap: 10px; }
+  .drop__bar { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; }
+  .drop__bar i { height: 12px; background: rgba(14,14,15,.14); }
+  .drop__bar i.on { background: var(--ink); }
+  .drop__bar i.o { background: var(--orange); }
+  /* as camadas vendidas "imprimem" quando o bloco aparece */
+  .drop__bar i { transition: background-color .35s ease calc(var(--k) * 70ms + 300ms); }
+  :global(.js) .drop__stock:not(.in) .drop__bar i { background: rgba(14, 14, 15, .14); }
+  .drop__clock b { display: inline-block; }
+  .drop__clock b.flip { animation: flip .45s cubic-bezier(.2, .8, .2, 1); }
+  @keyframes flip { from { transform: translateY(-40%); opacity: 0; } to { transform: none; opacity: 1; } }
+  .section--ivory .drop__stock .label strong { color: var(--ink); }
+
+  .drop__buy {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(14,14,15,.2);
+  }
+  .drop__price { display: grid; }
+  .drop__price strong { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+  .drop__price span { color: var(--ivory-muted); font-size: 13px; }
+
+  @media (max-width: 900px) {
+    .drop__grid { grid-template-columns: 1fr; }
+    .drop__stage { max-width: 560px; width: 100%; margin-inline: auto; }
+  }
+  @media (max-width: 480px) { .drop__buy .btn { width: 100%; } }
+</style>

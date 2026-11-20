@@ -1,0 +1,122 @@
+---
+import { url } from '../utils/url';
+const cols = [
+  {
+    title: 'Loja',
+    links: [
+      { label: 'Toda a coleção', href: '/colecao' },
+      { label: 'Estátuas', href: '/colecao?categoria=estatuas' },
+      { label: 'Colecionáveis', href: '/colecao?categoria=colecionaveis' },
+      { label: 'Gadgets', href: '/colecao?categoria=gadgets' },
+      { label: 'Cosplay', href: '/colecao?categoria=cosplay' },
+      { label: 'Edições limitadas', href: '/colecao?filtro=limitadas' },
+    ],
+  },
+  {
+    title: 'Estúdio',
+    links: [
+      { label: 'Processo', href: '/#processo' },
+      { label: 'Encomendas', href: '/#encomendas' },
+      { label: 'Sobre a Axis Zero', href: '/#processo' },
+    ],
+  },
+  {
+    title: 'Atendimento',
+    links: [
+      { label: 'Prazos e envio', href: '#' },
+      { label: 'Trocas e garantia', href: '#' },
+      { label: 'Cuidados com a peça', href: '#' },
+      { label: 'Contato', href: 'mailto:contato@axiszero.studio' },
+    ],
+  },
+];
+---
+<footer class="footer">
+  <div class="container footer__grid">
+    <div class="footer__brand" data-reveal>
+      <img src={url('/brand/logo-horizontal-marfim.webp')} width="1695" height="1034" alt="Axis Zero · Estúdio Industrial" />
+      <p class="display footer__motto">Do zero <em>à forma</em></p>
+      <form class="news" action="#" onsubmit="return false">
+        <label for="news-email" class="label">Avisos de novos drops</label>
+        <div class="news__row">
+          <input id="news-email" type="email" placeholder="seu@email.com" autocomplete="email" />
+          <button type="submit" class="btn btn--sm">Avisar</button>
+        </div>
+      </form>
+    </div>
+
+    {cols.map((c, i) => (
+      <nav class="footer__col" aria-label={c.title} data-reveal style={`--d:${i + 1}`}>
+        <h3 class="label">{c.title}</h3>
+        <ul>
+          {c.links.map((l) => <li><a href={url(l.href)}>{l.label}</a></li>)}
+        </ul>
+      </nav>
+    ))}
+  </div>
+
+  <div class="container footer__base">
+    <p>© 2026 Axis Zero · Estúdio Industrial</p>
+    <p><a href="#">@axiszero.studio</a> · <a href="mailto:contato@axiszero.studio">contato@axiszero.studio</a></p>
+  </div>
+
+  <div class="footer__layers" aria-hidden="true" data-reveal><i style="--k:2"></i><i style="--k:1"></i><i style="--k:0"></i></div>
+</footer>
+
+<style>
+  .footer { background: var(--ink); border-top: 1px solid var(--line); padding-top: clamp(48px, 7vw, 88px); }
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1.5fr repeat(3, 1fr);
+    gap: 40px;
+    padding-bottom: 56px;
+  }
+  .footer__brand { display: grid; gap: 24px; align-content: start; }
+  .footer__brand img { width: 150px; height: auto; }
+  .footer__motto { font-size: 28px; }
+
+  .news { display: grid; gap: 10px; max-width: 380px; }
+  .news__row { display: flex; gap: 8px; }
+  .news input {
+    flex: 1;
+    min-width: 0;
+    height: 40px;
+    padding: 0 14px;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    color: var(--ivory);
+    font: inherit;
+    font-size: 14px;
+  }
+  .news input::placeholder { color: var(--steel); }
+  .news input:focus-visible { outline-offset: 0; border-color: var(--orange); }
+
+  .footer__col { display: grid; gap: 16px; align-content: start; }
+  .footer__col ul { display: grid; gap: 10px; }
+  .footer__col a { font-size: 14.5px; color: #cfc8ba; transition: color .15s; }
+  .footer__col a:hover { color: var(--orange); }
+
+  .footer__base {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px;
+    padding-block: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--steel);
+  }
+  .footer__base a:hover { color: var(--ivory); }
+
+  .footer__layers { display: grid; gap: 4px; padding-bottom: 0; }
+  .footer__layers i { display: block; height: 4px; background: var(--orange); transform-origin: left; transition: transform 1s cubic-bezier(.2,.8,.2,1) calc(var(--k) * 110ms + 150ms); }
+  :global(.js) .footer__layers { opacity: 1; transform: none; }
+  :global(.js) .footer__layers:not(.in) i { transform: scaleX(0); }
+  .footer__layers i:nth-child(2) { width: 82%; }
+  .footer__layers i:nth-child(3) { width: 64%; background: var(--ivory); }
+
+  @media (max-width: 960px) {
+    .footer__grid { grid-template-columns: 1fr 1fr; }
+    .footer__brand { grid-column: 1 / -1; }
+  }
+  @media (max-width: 480px) { .footer__grid { grid-template-columns: 1fr; } }
+</style>

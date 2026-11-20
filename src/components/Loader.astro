@@ -1,0 +1,71 @@
+---
+import SymbolO from './SymbolO.astro';
+const N = 12;
+---
+<div class="loader" aria-hidden="true">
+  <div class="loader__strips">
+    {Array.from({ length: N }, (_, i) => (
+      <i class:list={[{ o: i >= N - 2 }]} style={`--k:${N - 1 - i}`}></i>
+    ))}
+  </div>
+
+  <div class="loader__center">
+    <div class="loader__symbol"><SymbolO uid="loader" play /></div>
+    <p class="loader__count"><b data-loader-n>000</b><span>%</span></p>
+    <p class="loader__label label" data-loader-l>Camada 00 / 12</p>
+  </div>
+</div>
+
+<style is:global>
+  .loader { display: none; }
+  html.is-loading { overflow: hidden; }
+  html.is-loading .loader {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: grid;
+    place-items: center;
+    pointer-events: all;
+  }
+
+  .loader__strips { position: absolute; inset: 0; display: grid; grid-template-rows: repeat(12, 1fr); }
+  .loader__strips i {
+    display: block;
+    background: var(--ink);
+    margin-block: -0.5px;              /* sem frestas entre as faixas */
+    will-change: transform;
+  }
+  .loader__strips i:nth-child(odd) { --dir: -1; }
+  .loader__strips i:nth-child(even) { --dir: 1; }
+  .loader__strips i.o { background: var(--orange); }
+
+  .loader__center {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+    transition: opacity .3s ease, transform .5s ease;
+  }
+  .loader__symbol { width: clamp(84px, 11vw, 120px); }
+  .loader__count {
+    display: flex; align-items: baseline; gap: 4px;
+    margin-top: 10px;
+    font-family: var(--font-display);
+    font-size: 40px;
+    letter-spacing: .02em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .loader__count span { font-size: 20px; color: var(--orange); }
+  .loader__label { color: var(--steel); }
+
+  /* saída: o centro some e as faixas deslizam, de baixo para cima */
+  html.loader-out .loader__center { opacity: 0; transform: scale(.92); }
+  html.loader-out .loader__strips i {
+    animation: strip-out .9s cubic-bezier(.7, 0, .2, 1) both;
+    animation-delay: calc(var(--k) * 45ms + 120ms);
+  }
+  @keyframes strip-out {
+    to { transform: translateX(calc(var(--dir) * 101%)); }
+  }
+</style>

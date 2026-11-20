@@ -1,0 +1,26 @@
+---
+/* Ícones de categoria: traço 2,5 px, cantos retos, quadro com chanfro. */
+interface Props { name: 'estatuas' | 'colecionaveis' | 'gadgets' | 'cosplay'; size?: number }
+const { name, size = 64 } = Astro.props;
+---
+<svg width={size} height={size} viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+  <path d="M14 2 H62 V50 L50 62 H2 V14 Z" />
+  {name === 'estatuas' && (<>
+    <circle cx="32" cy="20" r="4.5" />
+    <path d="M26 44 L28 28 H36 L38 44" />
+    <path d="M24 44 H40" /><path d="M20 50 H44" />
+  </>)}
+  {name === 'colecionaveis' && (<>
+    <path d="M32 14 L46 22 V40 L32 48 L18 40 V22 Z" />
+    <path d="M18 22 L32 30 L46 22" /><path d="M32 30 V48" />
+  </>)}
+  {name === 'gadgets' && (<>
+    <circle cx="32" cy="32" r="8" />
+    <path d="M32 12 V18 M32 46 V52 M12 32 H18 M46 32 H52 M18 18 L22 22 M42 42 L46 46 M46 18 L42 22 M22 42 L18 46" />
+    <circle cx="32" cy="32" r="14" />
+  </>)}
+  {name === 'cosplay' && (<>
+    <path d="M18 36 C18 24 24 16 32 16 C40 16 46 24 46 36 V42 H18 Z" />
+    <path d="M22 34 H42 V38 H22 Z" /><path d="M18 42 H46" />
+  </>)}
+</svg>
